@@ -1,0 +1,30 @@
+{
+    "titulo": "Módulo 1: Fundamentos do Inglês",
+    "video_url": "videos/ingles/esboçoLevelUp.mp4",
+    "atividades": [
+        {
+            "id": "q1",
+            "pergunta": "Qual a tradução de 'Hello'?",
+            "opcoes": {
+                "A": "Tchau",
+                "B": "Olá",
+                "C": "Bom Dia",
+                "D": "Noite"
+            }
+        },
+        {
+            "id": "q2",
+            "pergunta": "Como se conjuga 'to be' na primeira pessoa do singular?",
+            "opcoes": {
+                "A": "I am",
+                "B": "You are",
+                "C": "He is",
+                "D": "We are"
+            }
+        }
+    ],
+    "respostas_corretas": {
+        "q1": "B",
+        "q2": "A"
+    }
+}

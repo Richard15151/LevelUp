@@ -1,0 +1,30 @@
+{
+    "titulo": "Módulo 3: Passado Simples e Futuro",
+    "video_url": "videos/ingles/modulo3_past_future.mp4",
+    "atividades": [
+        {
+            "id": "q5",
+            "pergunta": "Qual o passado simples do verbo 'to go'?",
+            "opcoes": {
+                "A": "goed",
+                "B": "gone",
+                "C": "went",
+                "D": "go"
+            }
+        },
+        {
+            "id": "q6",
+            "pergunta": "Qual palavra é usada para formar o futuro simples?",
+            "opcoes": {
+                "A": "am",
+                "B": "did",
+                "C": "will",
+                "D": "have"
+            }
+        }
+    ],
+    "respostas_corretas": {
+        "q5": "C",
+        "q6": "C"
+    }
+}

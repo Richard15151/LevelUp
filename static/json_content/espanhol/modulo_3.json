@@ -1,0 +1,30 @@
+{
+    "titulo": "Espanhol - Módulo 3: Cultura e Conversação",
+    "video_url": "videos/espanhol/modulo3_conversacao.mp4",
+    "atividades": [
+        {
+            "id": "e5",
+            "pergunta": "Qual é a saudação mais comum na América Latina para dizer 'Até logo'?",
+            "opcoes": {
+                "A": "Hasta la vista",
+                "B": "Chao",
+                "C": "Adiós",
+                "D": "Hasta pronto"
+            }
+        },
+        {
+            "id": "e6",
+            "pergunta": "Qual o significado de 'Tengo hambre'?",
+            "opcoes": {
+                "A": "Estou com sede",
+                "B": "Estou cansado",
+                "C": "Estou com fome",
+                "D": "Estou com pressa"
+            }
+        }
+    ],
+    "respostas_corretas": {
+        "e5": "D",
+        "e6": "C"
+    }
+}

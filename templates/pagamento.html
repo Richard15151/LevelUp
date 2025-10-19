@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pagamento Aprovado - Level Up</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+
+    <div class="confirmacao-container max-w-lg w-full bg-white rounded-xl shadow-2xl overflow-hidden text-center mx-auto">
+        
+        <div class="confirmacao-header bg-green-500 text-white p-8">
+            <h1 class="text-3xl font-bold">Pagamento Aprovado!</h1>
+        </div>
+        
+        <div class="confirmacao-content p-10">
+            
+            <div class="icone-sucesso text-6xl text-green-500 mb-5">✓</div> 
+            
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Parabéns!</h2>
+            
+            <p class="mb-4 text-lg text-gray-600">
+                Seu pagamento para o curso de <span class="font-semibold text-green-600">{{ curso_acesso }}</span> foi processado com sucesso.
+            </p>
+            
+            <div class="border p-4 rounded-lg bg-green-50 border-green-200 mb-8">
+                <p class="text-lg font-bold text-green-800">Acesso Garantido: {{ curso_acesso }}</p>
+                <p class="text-sm text-gray-500 mt-1">Simulação de transação bem-sucedida.</p>
+            </div>
+
+            <a href="{{ url_for('cadastro', curso_acesso=curso_acesso) }}" 
+               class="btn-home inline-block w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-4 text-lg rounded-lg transition duration-200 no-underline">
+                Avançar para o Cadastro
+            </a>
+            
+            <p class="mt-6 text-sm text-gray-500">
+                Esta é uma simulação. Nenhum valor será cobrado.
+            </p>
+        </div>
+    </div>
+</body>
+</html>

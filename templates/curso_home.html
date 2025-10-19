@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Meu Curso - {{ curso }} - Level Up</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Estilos customizados para o card do módulo (mantendo a lógica do Código 1) */
+        .card-concluido {
+            border-left: 8px solid #10b981; /* Verde Esmeralda do Código 1 */
+        } 
+        .card-bloqueado {
+            opacity: 0.6;
+            cursor: not-allowed;
+            /* Garante que o texto dentro do card bloqueado também fique menos vibrante */
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100 font-sans">
+    
+    <header class="bg-gray-800 shadow-lg">
+        <div
+            class="max-w-7xl mx-auto px-4 py-4 flex flex-col md:flex-row justify-between items-center"
+        >
+            <h1 class="text-2xl font-bold text-white mb-2 md:mb-0">
+                <span class="text-indigo-400">Seja Bem-vindo(a),</span> {{
+                session.get('nome') }}!
+            </h1>
+            
+            <nav class="flex space-x-4">
+                <a href="{{ url_for('perfil') }}" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition duration-200">
+                    <i class="fas fa-user-circle mr-1"></i> Meu Perfil
+                </a>
+                <a href="{{ url_for('logout') }}" class="bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-md text-sm font-medium transition duration-200">
+                    Sair (Logout)
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 py-10 grid grid-cols-1 lg:grid-cols-3 gap-8">
+        
+        <div class="coluna-esquerda lg:col-span-2">
+            
+            <div class="bg-white p-6 md:p-8 rounded-xl shadow-lg mb-8">
+                <h2 class="text-3xl font-bold text-gray-900 mb-6">
+                    Página Inicial do Curso de {{ curso }}
+                </h2>
+
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 border-b pb-4">
+                    <div>
+                        <div class="text-lg font-semibold text-gray-700">Nível atual:</div>
+                        <div class="text-gray-500 capitalize">Básico (Exemplo)</div>
+                    </div>
+                </div>
+                
+                <div class="progresso-container">
+                    <div class="text-lg font-semibold text-gray-700 mb-2">Seu progresso:</div>
+                    <div class="w-full bg-gray-200 h-6 rounded-full overflow-hidden">
+                        {% set progresso_porcentagem = progresso_curso | default(25) %} 
+                        <div class="h-full bg-green-500 rounded-full transition-all duration-500" style="width: {{ progresso_curso }}%;"></div>
+                    </div>
+                    <div class="text-right mt-1 text-gray-600 font-medium">{{ progresso_porcentagem }}% Concluído</div>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 md:p-8 rounded-xl shadow-lg">
+                <h3 class="text-2xl font-bold text-gray-800 mb-6">Conteúdo do Curso</h3>
+                
+                <div class="space-y-4">
+                    {# Variável para rastrear se o módulo anterior foi concluído. #} 
+                    {% set desbloqueado_sequencial = true %}
+                    
+                    {% for modulo in modulos %} 
+                        {% set status_modulo = modulo.status %} 
+                        {% set card_class = "bg-gray-50 border-l-4" %} 
+                        {% set link_acesso = "#" %} 
+                        {% set mensagem_acao = "" %} 
+                        {% set is_clicavel = false %} 
+                        
+                        {# LÓGICA DE ESTADO E BLOQUEIO (Código 1) #}
+                        {% if status_modulo == 'Concluído' %} 
+                            {# ESTADO 1: CONCLUÍDO #} 
+                            {% set card_class = "card-concluido border-green-500" %} 
+                            {% set link_acesso = url_for('modulo_page', curso=curso|lower, ordem=modulo.ordem) %}
+                            {% set mensagem_acao = "CONCLUÍDO (" ~ (modulo.nota_final | default(0) | round(1)) ~ " %)" %} 
+                            {% set is_clicavel = true %} 
+                            {% set desbloqueado_sequencial = true %} 
+                            
+                        {% elif desbloqueado_sequencial %} 
+                            {# ESTADO 2: DISPONÍVEL #} 
+                            {% set link_acesso = url_for('modulo_page', curso=curso|lower, ordem=modulo.ordem) %} 
+                            {% set is_clicavel = true %} 
+                            {% set card_class = "bg-white border-blue-500 hover:shadow-md transition duration-200" %} 
+                            {% if status_modulo == 'Em Andamento' %} 
+                                {% set mensagem_acao = "CONTINUAR" %} 
+                            {% else %} 
+                                {% set mensagem_acao = "INICIAR" %} 
+                            {% endif %} 
+                            {% set desbloqueado_sequencial = false %} 
+                            
+                        {% else %} 
+                            {# ESTADO 3: BLOQUEADO #} 
+                            {% set card_class = "card-bloqueado bg-gray-200 border-red-500" %} 
+                            {% set mensagem_acao = "BLOQUEADO (Módulo " ~ (modulo.ordem - 1) ~ ")" %} 
+                            {% set is_clicavel = false %} 
+                            {% set desbloqueado_sequencial = false %} 
+                        {% endif %} 
+
+                        <a 
+                            href="{{ link_acesso if is_clicavel else '#' }}" 
+                            class="modulo block p-5 rounded-lg flex justify-between items-center {{ card_class }} {{ 'cursor-pointer' if is_clicavel else '' }}"
+                            aria-disabled="{{ 'false' if is_clicavel else 'true' }}"
+                        >
+                            <div class="flex-1 min-w-0">
+                                <span class="text-sm font-semibold text-indigo-600">MÓDULO {{ modulo.ordem }}</span>
+                                <h4 class="text-xl font-bold text-gray-800 truncate">{{ modulo.nome }}</h4>
+                                <p class="text-sm text-gray-500 mt-1">
+                                    {{ modulo.descricao | default("Acesse para ver o conteúdo completo deste módulo.") }}
+                                </p>
+                            </div>
+
+                            <div class="flex-shrink-0 ml-4 text-right">
+                                {% if status_modulo == 'Concluído' %} 
+                                    <span class="text-white bg-green-600 font-bold py-2 px-4 rounded-lg text-sm whitespace-nowrap shadow-md">
+                                        {{ mensagem_acao }}
+                                    </span>
+                                {% elif is_clicavel %} 
+                                    <span class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg text-sm transition duration-200 whitespace-nowrap shadow-md">
+                                        {{ mensagem_acao }}
+                                    </span>
+                                {% else %} 
+                                    <span class="text-red-600 font-semibold text-sm whitespace-nowrap">
+                                        {{ mensagem_acao }}
+                                    </span>
+                                {% endif %}
+                            </div>
+                        </a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="coluna-direita lg:col-span-1">
+            
+            <div class="bg-white p-6 rounded-xl shadow-lg sticky top-8">
+                <div class="dino-container text-center mb-6">
+                    <div class="w-28 h-28 bg-gray-100 border-3 border-dashed border-blue-500 rounded-full mx-auto flex items-center justify-center text-blue-600 font-semibold mb-4 text-sm">
+                        🤖 Dinossauro
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Precisa de Ajuda?</h3>
+                    <p class="text-gray-500">Fale com a nossa IA de suporte (Dinossauro!).</p>
+                </div>
+                
+                <div id="chat-area" class="bg-gray-50 p-4 rounded-lg min-h-[200px] max-h-[300px] overflow-y-auto mb-4">
+                    <div class="chat-mensagem p-2 bg-white rounded-xl shadow-sm border border-gray-200 text-gray-700 mb-2">
+                        Olá! Como posso ajudar você hoje com o curso?
+                    </div>
+                </div>
+                
+                <div class="chat-input flex gap-2">
+                    <input type="text" id="chat-input" placeholder="Digite sua mensagem..." 
+                           class="flex-1 p-3 border-2 border-gray-300 rounded-full focus:outline-none focus:border-blue-500 text-sm">
+                    <button id="btn-enviar" 
+                            class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-4 rounded-full transition duration-200 text-sm">
+                        Enviar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const chatInput = document.getElementById('chat-input');
+            const btnEnviar = document.getElementById('btn-enviar');
+            const chatArea = document.getElementById('chat-area');
+
+            function enviarMensagem() {
+                const mensagem = chatInput.value.trim();
+                
+                if (mensagem) {
+                    // Adiciona a mensagem do usuário
+                    const novaMensagem = document.createElement('div');
+                    novaMensagem.className = 'p-2 rounded-xl shadow-sm text-white mb-2 ml-auto';
+                    novaMensagem.style.backgroundColor = '#3498db'; /* Azul forte */
+                    novaMensagem.style.maxWidth = '80%';
+                    novaMensagem.textContent = mensagem;
+                    
+                    chatArea.appendChild(novaMensagem);
+                    chatInput.value = '';
+                    
+                    // Simula resposta do dinossauro
+                    setTimeout(() => {
+                        const resposta = document.createElement('div');
+                        resposta.className = 'p-2 bg-white rounded-xl shadow-sm border border-gray-200 text-gray-700 mb-2 mr-auto';
+                        resposta.style.maxWidth = '80%';
+                        resposta.textContent = 'Entendi! Consultei o material do curso. O que mais você gostaria de saber?';
+                        chatArea.appendChild(resposta);
+                        chatArea.scrollTop = chatArea.scrollHeight; // Scroll para o final
+                    }, 1000);
+                    
+                    chatArea.scrollTop = chatArea.scrollHeight; // Scroll para o final
+                }
+            }
+
+            btnEnviar.addEventListener('click', enviarMensagem);
+            
+            chatInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    enviarMensagem();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
