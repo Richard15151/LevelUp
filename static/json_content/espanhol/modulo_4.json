@@ -1,0 +1,63 @@
+{
+    "titulo": "Espanhol - Módulo 4: Expressões Avançadas e Cultura Hispânica",
+    "video_url": "videos/espanhol/modulo4_expresiones_cultura.mp4",
+    "atividades": [
+        {
+            "id": "e7",
+            "pergunta": "Qual é o significado da expressão 'Estar en las nubes'?",
+            "opcoes": {
+                "A": "Estar muito feliz",
+                "B": "Estar distraído ou sonhando acordado",
+                "C": "Estar irritado",
+                "D": "Estar sem dinheiro"
+            }
+        },
+        {
+            "id": "e8",
+            "pergunta": "Na cultura espanhola, o que significa 'sobremesa'?",
+            "opcoes": {
+                "A": "Uma refeição leve antes do jantar",
+                "B": "Uma conversa após a refeição",
+                "C": "Uma sobremesa típica feita com frutas",
+                "D": "Uma pausa para café durante o trabalho"
+            }
+        },
+        {
+            "id": "e9",
+            "pergunta": "O que quer dizer a expressão 'No tener pelos en la lengua'?",
+            "opcoes": {
+                "A": "Ser muito tímido",
+                "B": "Falar sem rodeios, com sinceridade",
+                "C": "Ser educado ao falar",
+                "D": "Ter dificuldade em se expressar"
+            }
+        },
+        {
+            "id": "e10",
+            "pergunta": "Qual país hispânico é conhecido por seu festival 'La Tomatina'?",
+            "opcoes": {
+                "A": "México",
+                "B": "Chile",
+                "C": "Espanha",
+                "D": "Argentina"
+            }
+        },
+        {
+            "id": "e11",
+            "pergunta": "O que significa '¡Qué guay!' em uma conversa informal na Espanha?",
+            "opcoes": {
+                "A": "Que chato!",
+                "B": "Que legal!",
+                "C": "Que estranho!",
+                "D": "Que preguiça!"
+            }
+        }
+    ],
+    "respostas_corretas": {
+        "e7": "B",
+        "e8": "B",
+        "e9": "B",
+        "e10": "C",
+        "e11": "B"
+    }
+}
