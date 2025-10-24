@@ -15,7 +15,7 @@ app.secret_key = 'levelup' # Mude isso! É usado para proteger as sessões.
 # CONFIGURAÇÃO DO BANCO DE DADOS (MySQL)
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'         # Mude para seu usuário MySQL
-app.config['MYSQL_PASSWORD'] = 'rdbanco' # Mude para sua senha MySQL
+app.config['MYSQL_PASSWORD'] = 'senai' # Mude para sua senha MySQL
 app.config['MYSQL_DB'] = 'levelup'
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor' # Retorna resultados como dicionários
 
