@@ -31,8 +31,6 @@ app = Flask(__name__,
 # CONFIGURAÇÃO DE SEGURANÇA
 app.secret_key = 'levelup' # Mantenha a chave do app.py
 # CONFIGURAÇÃO DO CHATBOT: Substitua pela sua chave GENAI_KEY
-GENAI_KEY = os.getenv("GENAI_KEY")
-client = genai.Client(api_key=GENAI_KEY)
 
 # CONFIGURAÇÃO DO BANCO DE DADOS (MySQL)
 app.config['MYSQL_HOST'] = 'localhost'
@@ -51,6 +49,93 @@ socketio = SocketIO(app,
                     manage_session=False, 
                     async_mode='eventlet') 
 
+# -------------------------------------------------------------------
+# CONFIGURAÇÃO DO CHATBOT COM CHAVES ROTATIVAS (NOVO SISTEMA)
+# -------------------------------------------------------------------
+# 1. Carregar todas as chaves disponíveis do .env
+GENAI_KEYS = []
+i = 1   
+while os.getenv(f"GENAI_KEY_{i}"):
+    GENAI_KEYS.append(os.getenv(f"GENAI_KEY_{i}"))
+    i += 1
+
+if not GENAI_KEYS:
+    # Se isso acontecer, ele para o programa e alerta que não há chaves.
+    raise RuntimeError("Nenhuma chave Gemini API encontrada no arquivo .env (Esperando GENAI_KEY_1, GENAI_KEY_2, etc.)")
+
+# 2. Variável de controle (global) para a chave ativa
+API_STATE = {
+    'active_key_index': 0,
+    # Inicializa o cliente usando a primeira chave (índice 0)
+    'client': genai.Client(api_key=GENAI_KEYS[0]) 
+}
+# -------------------------------------------------------------------
+
+def switch_to_next_api_key():
+    """
+    Alterna para a próxima chave de API disponível.
+    Retorna True se conseguir mudar, False se todas falharam.
+    """
+    global API_STATE, GENAI_KEYS
+    
+    current_index = API_STATE['active_key_index']
+    next_index = (current_index + 1) % len(GENAI_KEYS) # Rota para o próximo índice
+
+    if next_index == current_index:
+        # Significa que só há 1 chave, ou que o loop deu uma volta completa.
+        app.logger.error("ERRO GRAVE: A única chave API falhou ou todas as chaves falharam.")
+        return False
+        
+    try:
+        new_key = GENAI_KEYS[next_index]
+        API_STATE['client'] = genai.Client(api_key=new_key)
+        API_STATE['active_key_index'] = next_index
+        app.logger.warning(f"Chave API esgotada/falhou. Mudando para a chave no índice {next_index}.")
+        return True
+    except Exception as e:
+        app.logger.error(f"Falha ao inicializar o cliente com a chave no índice {next_index}: {e}")
+        return False
+
+def send_message_with_rotation(chat_session, mensagem_usuario):
+    """
+    Envia a mensagem e tenta rotacionar a chave em caso de erro da API.
+    Retorna a resposta do Gemini ou levanta uma exceção final.
+    """
+    global API_STATE
+    
+    # Tentativa 1
+    try:
+        return chat_session.send_message(mensagem_usuario)
+    except (genai.errors.ResourceExhausted, genai.errors.PermissionDenied) as e:
+        # ResourceExhausted: Limite atingido (rate limit)
+        # PermissionDenied: Chave inválida ou expirada
+        app.logger.warning(f"Erro da API (chave): {type(e).__name__}. Tentando rotacionar a chave...")
+        
+        # 1. Tentar rotacionar a chave
+        if switch_to_next_api_key():
+            # 2. Recriar a sessão de chat (pois a antiga está ligada ao cliente velho)
+            # Nota: Isso recria o histórico, então o contexto anterior será perdido!
+            # Para manter o histórico, você precisaria reconstruir a conversa manualmente.
+            # Por simplicidade e em caso de falha de chave, vamos começar do zero.
+            curso_acesso = chat_session.config.system_instruction.split("curso de ")[-1].strip().split()[0]
+            
+            # Recria o chat usando o NOVO cliente da API_STATE
+            new_chat_session = API_STATE['client'].chats.create(
+                model="gemini-2.5-flash",
+                config=types.GenerateContentConfig(
+                    system_instruction=get_curso_system_instruction(curso_acesso)
+                )
+            )
+            
+            # 3. Tentar enviar a mensagem novamente com a nova sessão
+            return new_chat_session.send_message(mensagem_usuario)
+        else:
+            # Não conseguiu mudar de chave
+            raise RuntimeError("Todas as chaves da API falharam ou foram esgotadas.") from e
+    
+    # Outros erros (conexão, etc.) são levantados
+    except Exception as e:
+        raise
 # *******************************************************************
 # LÓGICA DO CHATBOT (NOVO CONTEXTO: Professor do Curso)
 # *******************************************************************
@@ -91,11 +176,11 @@ def get_user_chat(curso_acesso):
     if chat_key not in active_chats:
         app.logger.info(f"Criando novo chat Gemini para chave: {chat_key}")
         try:
-            # Gera as instruções específicas do curso
             instrucoes_curso = get_curso_system_instruction(curso_acesso)
             
-            chat_session = client.chats.create(
-                model="gemini-2.5-flash", # Modelo mais moderno e capaz
+            # ATENÇÃO: Usa o cliente ATIVO em API_STATE
+            chat_session = API_STATE['client'].chats.create(
+                model="gemini-2.5-flash",
                 config=types.GenerateContentConfig(system_instruction=instrucoes_curso)
             )
             active_chats[chat_key] = chat_session
@@ -103,7 +188,6 @@ def get_user_chat(curso_acesso):
             app.logger.error(f"Erro ao criar chat Gemini para {chat_key}: {e}", exc_info=True)
             raise
             
-    # Retorna o chat associado à chave única (session_id + curso)
     return active_chats[chat_key]
 
 @socketio.on('connect')
@@ -121,35 +205,35 @@ def handle_enviar_mensagem(data):
     with current_app.app_context():
         try:
             mensagem_usuario = data.get("mensagem")
-            # NOVO: Recebe o nome do curso para contextualizar
             curso_acesso = data.get('curso_acesso')
-            nome = session.get('nome', 'Aluno')
+            nome = session.get('nome', 'Aluno') 
             
             if not mensagem_usuario or not curso_acesso:
                 emit('erro', {"erro": "Mensagem ou contexto do curso ausente."})
                 return
-                
-            app.logger.info(f"Mensagem recebida para o curso '{curso_acesso}': {mensagem_usuario}")
-            
-            # OBTÉM OU CRIA A SESSÃO DE CHAT (com contexto do curso)
+
             user_chat = get_user_chat(curso_acesso)
 
             if user_chat is None:
                 emit('erro', {"erro": "Sessão de chat não pôde ser estabelecida."})
                 return
                 
-            # 1. Envia a mensagem para o Gemini
-            resposta_gemini = user_chat.send_message(mensagem_usuario)
+            # 1. NOVO PASSO: Chama a função de envio com rotação
+            resposta_gemini = send_message_with_rotation(user_chat, mensagem_usuario)
             
             # 2. Extrai o texto da resposta
             resposta_texto = resposta_gemini.text
             
-            # 3. Emite a resposta de volta para o cliente
+            # ... (Emite a resposta) ...
             emit('nova_mensagem', {"remetente": "bot", "texto": resposta_texto})
             
         except Exception as e:
             app.logger.error(f"Erro ao processar 'enviar_mensagem': {e}", exc_info=True)
-            emit('erro', {"erro": f"Ocorreu um erro no servidor: {str(e)}"})
+            # Mensagem de erro mais amigável para o usuário:
+            if "Todas as chaves" in str(e):
+                    emit('erro', {"erro": "O sistema de IA está indisponível. Tente novamente mais tarde."})
+            else:
+                    emit('erro', {"erro": f"Ocorreu um erro no servidor: {str(e)}"})
 
 @socketio.on('disconnect')
 def handle_disconnect():
