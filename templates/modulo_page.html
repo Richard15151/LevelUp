@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pagamento Aprovado - Level Up</title>
+    <title>{{ conteudo.titulo }} - Level Up</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <script>
         tailwind.config = {
             theme: {
@@ -16,92 +17,179 @@
                         'verde-claro': '#98e6d6',
                         'roxo-cta': '#bd5ecf',
                         'azul-metodo': '#6cc4ea',
+                    },
+                    boxShadow: {
+                        'soft': '0 8px 30px rgba(0, 0, 0, 0.08)',
+                        'medium': '0 10px 40px rgba(0, 0, 0, 0.12)',
                     }
                 }
             }
         }
     </script>
+
     <style>
-        .bg-fundo-claro { background-color: #edceff; }
-        .bg-texto-escuro { background-color: #013765; }
-        .bg-verde-claro { background-color: #98e6d6; }
-        .bg-roxo-cta { background-color: #bd5ecf; }
-        .bg-azul-metodo { background-color: #6cc4ea; }
-        
-        .text-fundo-claro { color: #edceff; }
-        .text-texto-escuro { color: #013765; }
-        .text-verde-claro { color: #98e6d6; }
-        .text-roxo-cta { color: #bd5ecf; }
-        .text-azul-metodo { color: #6cc4ea; }
-        
-        .border-roxo-cta { border-color: #bd5ecf; }
-        .border-verde-claro { border-color: #98e6d6; }
-        .border-azul-metodo { border-color: #6cc4ea; }
-        
-        .from-roxo-cta { --tw-gradient-from: #bd5ecf; }
-        .to-azul-metodo { --tw-gradient-to: #6cc4ea; }
+        body {
+            background: linear-gradient(135deg, #f8f9fa 0%, #edceff 100%);
+            min-height: 100vh;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
+        .option-hover:hover {
+            background-color: rgba(189, 94, 207, 0.1);
+            border-color: #bd5ecf;
+        }
+        .option-selected {
+            background-color: rgba(189, 94, 207, 0.15);
+            border-color: #bd5ecf;
+        }
     </style>
 </head>
-<body class="bg-[#edceff] flex items-center justify-center min-h-screen p-5">
 
-    <div class="confirmacao-container max-w-lg w-full bg-white rounded-2xl shadow-2xl overflow-hidden text-center mx-auto border border-[#98e6d6] transform hover:scale-[1.02] transition duration-300">
-        
-        <!-- Header com gradiente -->
-        <div class="confirmacao-header bg-gradient-to-r from-[#bd5ecf] to-[#6cc4ea] text-white p-8">
-            <div class="w-20 h-20 mx-auto mb-4 bg-white/20 rounded-full flex items-center justify-center">
-                <i class="fas fa-check-circle text-4xl text-white"></i>
-            </div>
-            <h1 class="text-3xl font-bold">Pagamento Aprovado!</h1>
-            <p class="text-[#98e6d6] mt-2 font-semibold">Level Up</p>
-        </div>
-        
-        <div class="confirmacao-content p-8">
-            
-            <!-- Ícone de sucesso -->
-            <div class="icone-sucesso w-24 h-24 mx-auto mb-6 bg-[#98e6d6] bg-opacity-20 rounded-full flex items-center justify-center">
-                <i class="fas fa-trophy text-4xl text-[#98e6d6]"></i>
-            </div> 
-            
-            <h2 class="text-2xl font-bold text-[#013765] mb-4">Parabéns!</h2>
-            
-            <p class="mb-6 text-lg text-[#013765] text-opacity-80 leading-relaxed">
-                Seu pagamento para o curso de <span class="font-bold text-[#bd5ecf]">{{ curso_acesso }}</span> foi processado com sucesso.
-            </p>
-            
-            <!-- Card de confirmação -->
-            <div class="border-2 border-[#98e6d6] p-5 rounded-xl bg-[#98e6d6] bg-opacity-10 mb-8">
-                <div class="flex items-center justify-center gap-3 mb-3">
-                    <i class="fas fa-unlock-alt text-[#bd5ecf] text-xl"></i>
-                    <p class="text-lg font-bold text-[#013765]">Acesso Garantido</p>
+<body class="font-sans p-5 md:p-8">
+
+    <div class="max-w-4xl mx-auto">
+
+        <!-- Cabeçalho -->
+        <div class="bg-white rounded-2xl shadow-soft p-6 mb-8 border-l-4 border-roxo-cta transition-all duration-300 card-hover">
+            <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
+                <div>
+                    <a href="{{ url_for('curso_home') }}" class="inline-flex items-center text-roxo-cta hover:text-texto-escuro transition-colors mb-2">
+                        <i class="fas fa-arrow-left text-lg mr-3"></i>
+                        <span class="font-semibold">Voltar ao Curso</span>
+                    </a>
+                    <h1 class="text-2xl md:text-3xl font-bold text-texto-escuro">{{ conteudo.titulo }}</h1>
                 </div>
-                <p class="text-2xl font-extrabold text-[#bd5ecf] mb-2">{{ curso_acesso }}</p>
-                <p class="text-sm text-[#013765] text-opacity-70">Simulação de transação bem-sucedida</p>
-            </div>
-
-            <!-- Botão de ação -->
-            <a href="{{ url_for('cadastro', curso_acesso=curso_acesso) }}" 
-               class="btn-home inline-block w-full bg-[#bd5ecf] hover:bg-[#013765] text-white font-bold py-4 px-6 text-lg rounded-xl transition duration-200 no-underline shadow-lg hover:shadow-xl transform hover:scale-105 mb-4">
-                <i class="fas fa-user-plus mr-3"></i>
-                Avançar para o Cadastro
-            </a>
-            
-            <!-- Informação adicional -->
-            <div class="mt-6 p-4 bg-[#6cc4ea] bg-opacity-10 rounded-xl border border-[#6cc4ea] border-opacity-30">
-                <div class="flex items-center justify-center gap-2 text-sm text-[#013765] text-opacity-80">
-                    <i class="fas fa-info-circle text-[#6cc4ea]"></i>
-                    <span>Esta é uma simulação. Nenhum valor será cobrado.</span>
+                
+                <div class="flex flex-wrap gap-3 text-sm">
+                    <span class="bg-verde-claro text-texto-escuro px-3 py-2 rounded-lg font-medium flex items-center">
+                        <i class="fas fa-book mr-2"></i> {{ curso | capitalize }}
+                    </span>
+                    <span class="bg-azul-metodo text-white px-3 py-2 rounded-lg font-medium flex items-center">
+                        <i class="fas fa-layer-group mr-2"></i> Módulo {{ ordem }}
+                    </span>
+                    <span class="bg-roxo-cta text-white px-3 py-2 rounded-lg font-medium flex items-center">
+                        <i class="fas fa-clock mr-2"></i> 15 min
+                    </span>
                 </div>
             </div>
+        </div>
 
-            <!-- Progresso steps -->
-            <div class="mt-6 flex items-center justify-center gap-2 text-xs text-[#013765] text-opacity-60">
-                <span class="bg-[#98e6d6] text-[#013765] px-2 py-1 rounded-full">1. Pagamento ✓</span>
-                <i class="fas fa-arrow-right text-[#bd5ecf]"></i>
-                <span class="bg-[#bd5ecf] text-white px-2 py-1 rounded-full">2. Cadastro</span>
-                <i class="fas fa-arrow-right text-[#bd5ecf]"></i>
-                <span class="bg-gray-200 text-[#013765] px-2 py-1 rounded-full">3. Aprender</span>
+        <!-- Seção de Vídeo -->
+        <div class="bg-white rounded-2xl shadow-soft p-6 mb-8 transition-all duration-300 card-hover">
+            <div class="flex items-center mb-6">
+                <div class="w-12 h-12 bg-roxo-cta rounded-xl flex items-center justify-center mr-4">
+                    <i class="fas fa-play text-white text-xl"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-texto-escuro">Vídeo Aula</h2>
+            </div>
+
+            <div class="mb-6 rounded-xl overflow-hidden shadow-medium bg-gray-900">
+                <video controls class="w-full h-auto" poster="" preload="metadata">
+                    <source src="{{ url_for('static', filename=conteudo.video_url) }}" type="video/mp4">
+                    Seu navegador não suporta a tag de vídeo.
+                </video>
+            </div>
+
+            <div class="bg-verde-claro p-6 rounded-xl border border-white">
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
+                    <h3 class="text-xl font-bold text-texto-escuro mb-2 md:mb-0">{{ conteudo.titulo }}</h3>
+                    <div class="flex gap-4 text-sm text-texto-escuro">
+                        <span class="flex items-center">
+                            <i class="fas fa-clock mr-1"></i> 15 min
+                        </span>
+                        <span class="flex items-center">
+                            <i class="fas fa-signal mr-1"></i> Básico
+                        </span>
+                    </div>
+                </div>
+
+                <p class="text-texto-escuro">
+                    {{ conteudo.descricao or 'Nesta aula você aprenderá sobre tópicos essenciais com exemplos práticos e vocabulário aplicado.' }}
+                </p>
             </div>
         </div>
+
+        <!-- Seção de Atividades -->
+        <div class="bg-white rounded-2xl shadow-soft p-6 transition-all duration-300 card-hover">
+            <div class="flex items-center mb-6">
+                <div class="w-12 h-12 bg-azul-metodo rounded-xl flex items-center justify-center mr-4">
+                    <i class="fas fa-pencil-alt text-white text-xl"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-texto-escuro">Atividades sobre o Vídeo</h2>
+            </div>
+            
+            <form method="POST" action="{{ url_for('enviar_atividade', curso=curso, ordem=ordem) }}" class="space-y-6">
+
+                {% for atividade in conteudo.atividades %}
+                    {% set input_name = 'pergunta_' ~ atividade.id %}
+                    
+                    <div class="questao bg-fundo-claro p-6 rounded-xl border-2 border-transparent transition-all duration-300 hover:border-roxo-cta">
+                        <div class="flex items-center mb-4">
+                            <div class="w-8 h-8 bg-roxo-cta rounded-full flex items-center justify-center mr-3">
+                                <span class="text-white font-bold text-sm">{{ loop.index }}</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-texto-escuro">Questão {{ loop.index }}</h3>
+                        </div>
+
+                        <div class="bg-white p-4 rounded-lg mb-5 border-l-4 border-azul-metodo shadow-sm">
+                            <p class="text-texto-escuro font-medium">{{ atividade.pergunta }}</p>
+                        </div>
+
+                        <div class="space-y-3">
+                            {% for alternativa, texto in atividade.opcoes.items() %}
+                                <label class="alternativa-block cursor-pointer">
+                                    <input type="radio" 
+                                           name="{{ input_name }}" 
+                                           value="{{ alternativa }}" 
+                                           required 
+                                           class="hidden peer">
+                                    <div class="flex items-start p-4 rounded-xl border-2 border-gray-200 transition-all duration-300 option-hover peer-checked:option-selected">
+                                        <div class="flex-shrink-0 w-8 h-8 bg-gray-200 text-texto-escuro rounded-full flex items-center justify-center font-bold text-sm mr-4 mt-1 peer-checked:bg-roxo-cta peer-checked:text-white transition-colors">
+                                            {{ alternativa }}
+                                        </div>
+                                        <span class="text-texto-escuro pt-1 flex-1">
+                                            {{ texto }}
+                                        </span>
+                                    </div>
+                                </label>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endfor %}
+
+                <div class="pt-6 border-t border-gray-200">
+                    <button type="submit" class="w-full bg-roxo-cta hover:bg-texto-escuro text-white font-bold py-4 px-6 rounded-xl text-lg transition-all duration-300 flex items-center justify-center shadow-medium hover:shadow-xl">
+                        <i class="fas fa-paper-plane mr-3"></i> 
+                        Enviar Atividades e Concluir Módulo
+                    </button>
+                </div>
+            </form>
+        </div>
+
     </div>
+
+    <script>
+        // Adiciona interatividade às opções
+        document.addEventListener('DOMContentLoaded', function() {
+            const labels = document.querySelectorAll('.alternativa-block');
+            
+            labels.forEach(label => {
+                label.addEventListener('click', function() {
+                    // Remove a seleção de outras opções do mesmo grupo
+                    const groupName = this.querySelector('input').name;
+                    document.querySelectorAll(`input[name="${groupName}"]`).forEach(input => {
+                        input.parentElement.querySelector('.flex').classList.remove('option-selected');
+                        input.parentElement.querySelector('.flex').classList.add('border-gray-200');
+                    });
+                    
+                    // Adiciona a seleção à opção clicada
+                    this.querySelector('.flex').classList.add('option-selected');
+                    this.querySelector('.flex').classList.remove('border-gray-200');
+                });
+            });
+        });
+    </script>
 </body>
 </html>
