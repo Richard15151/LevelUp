@@ -6,36 +6,63 @@
     <title>Pagamento Aprovado - Level Up</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'fundo-claro': '#edceff',
+                        'texto-escuro': '#013765',
+                        'verde-claro': '#98e6d6',
+                        'roxo-cta': '#bd5ecf',
+                        'azul-metodo': '#6cc4ea',
+                    }
+                }
+            }
+        }
+    </script>
 </head>
-<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+<body class="bg-fundo-claro flex items-center justify-center min-h-screen p-5">
 
-    <div class="confirmacao-container max-w-lg w-full bg-white rounded-xl shadow-2xl overflow-hidden text-center mx-auto">
+    <div class="confirmacao-container max-w-lg w-full bg-white rounded-2xl shadow-2xl overflow-hidden text-center mx-auto border border-verde-claro">
         
-        <div class="confirmacao-header bg-green-500 text-white p-8">
+        <div class="confirmacao-header bg-roxo-cta text-white p-8">
+            <div class="w-20 h-20 mx-auto mb-4 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                <i class="fas fa-check-circle text-4xl text-white"></i>
+            </div>
             <h1 class="text-3xl font-bold">Pagamento Aprovado!</h1>
+            <p class="text-verde-claro mt-2 font-semibold">Level Up</p>
         </div>
         
-        <div class="confirmacao-content p-10">
+        <div class="confirmacao-content p-8">
             
-            <div class="icone-sucesso text-6xl text-green-500 mb-5">✓</div> 
+            <div class="icone-sucesso w-24 h-24 mx-auto mb-6 bg-verde-claro bg-opacity-20 rounded-full flex items-center justify-center">
+                <i class="fas fa-trophy text-4xl text-verde-claro"></i>
+            </div> 
             
-            <h2 class="text-2xl font-bold text-gray-800 mb-4">Parabéns!</h2>
+            <h2 class="text-2xl font-bold text-texto-escuro mb-4">Parabéns!</h2>
             
-            <p class="mb-4 text-lg text-gray-600">
-                Seu pagamento para o curso de <span class="font-semibold text-green-600">{{ curso_acesso }}</span> foi processado com sucesso.
+            <p class="mb-6 text-lg text-texto-escuro leading-relaxed">
+                Seu pagamento para o curso de <span class="font-bold text-roxo-cta">{{ curso_acesso }}</span> foi processado com sucesso.
             </p>
             
-            <div class="border p-4 rounded-lg bg-green-50 border-green-200 mb-8">
-                <p class="text-lg font-bold text-green-800">Acesso Garantido: {{ curso_acesso }}</p>
-                <p class="text-sm text-gray-500 mt-1">Simulação de transação bem-sucedida.</p>
+            <div class="border border-verde-claro p-5 rounded-xl bg-verde-claro bg-opacity-10 mb-8">
+                <div class="flex items-center justify-center gap-3 mb-3">
+                    <i class="fas fa-unlock-alt text-roxo-cta text-xl"></i>
+                    <p class="text-lg font-bold text-texto-escuro">Acesso Garantido</p>
+                </div>
+                <p class="text-2xl font-extrabold text-roxo-cta mb-2">{{ curso_acesso }}</p>
+                <p class="text-sm text-texto-escuro">Simulação de transação bem-sucedida</p>
             </div>
 
             <a href="{{ url_for('cadastro', curso_acesso=curso_acesso) }}" 
-               class="btn-home inline-block w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-4 text-lg rounded-lg transition duration-200 no-underline">
+               class="btn-home inline-block w-full bg-roxo-cta hover:bg-texto-escuro text-white font-bold py-4 px-6 text-lg rounded-xl transition duration-200 no-underline shadow-lg hover:shadow-xl">
+                <i class="fas fa-user-plus mr-3"></i>
                 Avançar para o Cadastro
             </a>
             
-            <p class="mt-6 text-sm text-gray-500">
+            <p class="mt-6 text-sm text-azul-metodo">
+                <i class="fas fa-info-circle mr-2"></i>
                 Esta é uma simulação. Nenhum valor será cobrado.
             </p>
         </div>
