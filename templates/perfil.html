@@ -11,88 +11,111 @@
     />
 
     <script>
-      // Configuração do Tailwind para usar cores customizadas
       tailwind.config = {
         theme: {
           extend: {
             colors: {
-              "primary-blue": "#4361ee",
-              "secondary-blue": "#3f37c9",
-              "success-cyan": "#4cc9f0",
-              "danger-red": "#f72585",
-            },
-            borderRadius: {
-              xl: "16px", // Novo radius maior para cards
-            },
-          },
-        },
-      };
+              'fundo-claro': '#edceff',
+              'texto-escuro': '#013765',
+              'verde-claro': '#98e6d6',
+              'roxo-cta': '#bd5ecf',
+              'azul-metodo': '#6cc4ea',
+            }
+          }
+        }
+      }
     </script>
+    <style>
+      .bg-fundo-claro { background-color: #edceff; }
+      .bg-texto-escuro { background-color: #013765; }
+      .bg-verde-claro { background-color: #98e6d6; }
+      .bg-roxo-cta { background-color: #bd5ecf; }
+      .bg-azul-metodo { background-color: #6cc4ea; }
+      
+      .text-texto-escuro { color: #013765; }
+      .text-verde-claro { color: #98e6d6; }
+      .text-roxo-cta { color: #bd5ecf; }
+      .text-azul-metodo { color: #6cc4ea; }
+      
+      .border-roxo-cta { border-color: #bd5ecf; }
+      .border-verde-claro { border-color: #98e6d6; }
+      .border-azul-metodo { border-color: #6cc4ea; }
+    </style>
   </head>
-  <body class="bg-[#f5f7ff] font-sans min-h-screen flex flex-col">
+  <body class="bg-[#edceff] font-sans min-h-screen flex flex-col">
     <header class="bg-white shadow-md">
       <div
         class="max-w-5xl mx-auto px-4 py-3 flex justify-between items-center"
       >
         <a
           href="{{ url_for('curso_home') }}"
-          class="text-primary-blue hover:text-secondary-blue font-semibold transition"
+          class="text-[#bd5ecf] hover:text-[#013765] font-semibold transition duration-300 flex items-center"
         >
-          <i class="fas fa-arrow-left mr-2"></i> Voltar para o Curso
+          <i class="fas fa-arrow-left mr-2 bg-[#bd5ecf] text-white p-2 rounded-lg"></i> 
+          Voltar para o Curso
         </a>
         <a
           href="{{ url_for('logout') }}"
-          class="text-sm text-danger-red hover:bg-danger-red hover:text-white font-medium border border-danger-red px-3 py-1 rounded-lg transition duration-300"
+          class="text-sm text-[#bd5ecf] hover:bg-[#bd5ecf] hover:text-white font-medium border border-[#bd5ecf] px-3 py-2 rounded-lg transition duration-300"
         >
-          Sair
+          <i class="fas fa-sign-out-alt mr-2"></i>Sair
         </a>
       </div>
     </header>
 
     <main class="max-w-5xl mx-auto px-4 py-10 flex-grow w-full">
+      <!-- Header do Perfil -->
       <div
-        class="p-8 rounded-xl shadow-2xl mb-8 relative overflow-hidden"
-        style="background: linear-gradient(135deg, #4361ee, #3f37c9)"
+        class="p-8 rounded-2xl shadow-2xl mb-8 relative overflow-hidden border border-[#98e6d6]"
+        style="background: linear-gradient(135deg, #bd5ecf, #6cc4ea)"
       >
         <div
           class="flex flex-col md:flex-row items-start md:items-center space-y-6 md:space-y-0 md:space-x-8 text-white"
         >
           <div
-            class="flex-shrink-0 w-24 h-24 rounded-full bg-white flex items-center justify-center border-4 border-opacity-50 border-white shadow-xl"
+            class="flex-shrink-0 w-24 h-24 rounded-full bg-white flex items-center justify-center border-4 border-[#98e6d6] shadow-xl"
           >
-            <i class="fas fa-user text-4xl text-primary-blue"></i>
+            <i class="fas fa-user text-4xl text-[#bd5ecf]"></i>
           </div>
 
-          <div class="flex-grow space-y-1">
+          <div class="flex-grow space-y-2">
             <p class="text-3xl font-bold">{{ nome }}</p>
             <p class="text-lg opacity-90">{{ email }}</p>
 
-            <div class="pt-2">
+            <div class="pt-3">
               <span
-                class="inline-block bg-white bg-opacity-20 text-white text-sm font-semibold px-3 py-1 rounded-full backdrop-blur-sm"
+                class="inline-block bg-white bg-opacity-20 text-white text-sm font-semibold px-4 py-2 rounded-full backdrop-blur-sm border border-white border-opacity-30"
               >
-                Curso: {{ curso }}
+                <i class="fas fa-graduation-cap mr-2"></i>Curso: {{ curso }}
               </span>
+            </div>
+          </div>
+
+          <div class="flex-shrink-0">
+            <div class="bg-white bg-opacity-20 rounded-xl p-4 text-center backdrop-blur-sm">
+              <div class="text-2xl font-bold">{{ modulos_concluidos | default(0) }}</div>
+              <div class="text-sm opacity-90">Módulos Concluídos</div>
             </div>
           </div>
         </div>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Progresso do Curso -->
         <div class="space-y-6">
           <div
-            class="bg-white p-6 rounded-xl shadow-lg h-fit transition duration-300 hover:shadow-xl"
+            class="bg-white p-6 rounded-2xl shadow-lg h-fit transition duration-300 hover:shadow-xl border border-[#98e6d6]"
           >
             <div
-              class="flex justify-between items-center mb-4 pb-3 border-b border-gray-100"
+              class="flex justify-between items-center mb-4 pb-3 border-b border-[#98e6d6]"
             >
-              <h3 class="text-xl font-semibold text-gray-800 flex items-center">
-                <i class="fas fa-tasks mr-3 text-primary-blue"></i> Progresso do
-                Curso
+              <h3 class="text-xl font-semibold text-[#013765] flex items-center">
+                <i class="fas fa-tasks mr-3 text-[#bd5ecf] bg-[#bd5ecf] bg-opacity-10 p-2 rounded-lg"></i> 
+                Progresso do Curso
               </h3>
               <a
                 href="{{ url_for('curso_home') }}"
-                class="text-primary-blue hover:text-secondary-blue text-sm font-medium transition"
+                class="text-[#bd5ecf] hover:text-[#013765] text-sm font-medium transition duration-300"
                 >Ir para o Curso</a
               >
             </div>
@@ -100,14 +123,14 @@
             <div class="space-y-4">
               <div>
                 <div
-                  class="flex justify-between text-base font-semibold text-gray-700 mb-2"
+                  class="flex justify-between text-base font-semibold text-[#013765] mb-2"
                 >
                   <span
                     >Módulos Concluídos ({{ modulos_concluidos | default(0) }}
                     de {{ total_modulos | default(0) }})</span
                   >
 
-                  <span class="text-primary-blue"
+                  <span class="text-[#bd5ecf]"
                     >{{ progresso_curso | default(0) }}%</span
                   >
                 </div>
@@ -117,65 +140,107 @@
                   style="--progresso: {{ progresso_curso | default(0) }}%;"
                 >
                   <div
-                    class="h-full bg-primary-blue transition-all duration-500"
+                    class="h-full bg-[#98e6d6] transition-all duration-500"
                     style="width: var(--progresso)"
                   ></div>
                 </div>
               </div>
 
-              <div class="p-3 bg-gray-50 rounded-lg text-sm text-gray-700">
+              <div class="p-4 bg-[#98e6d6] bg-opacity-10 rounded-lg text-sm text-[#013765] border border-[#98e6d6] border-opacity-30">
                 {% if progresso_curso == 100 %}
-                <i class="fas fa-award text-success-cyan mr-2"></i>
-                Parabéns! Você concluiu seu curso! {% else %}
-                <i class="fas fa-flag text-success-cyan mr-2"></i> Faltam {{
-                total_modulos - modulos_concluidos }} módulos para completar seu
-                curso. {% endif %}
+                <i class="fas fa-award text-[#98e6d6] mr-2"></i>
+                <span class="font-semibold">Parabéns! Você concluiu seu curso!</span>
+                {% else %}
+                <i class="fas fa-flag text-[#98e6d6] mr-2"></i>
+                <span class="font-semibold">Faltam {{ total_modulos - modulos_concluidos }} módulos para completar seu curso.</span>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+
+          <!-- Estatísticas Rápidas -->
+          <div
+            class="bg-white p-6 rounded-2xl shadow-lg h-fit transition duration-300 hover:shadow-xl border border-[#6cc4ea]"
+          >
+            <h3 class="text-xl font-semibold text-[#013765] flex items-center mb-4">
+              <i class="fas fa-chart-bar mr-3 text-[#6cc4ea] bg-[#6cc4ea] bg-opacity-10 p-2 rounded-lg"></i>
+              Estatísticas
+            </h3>
+            <div class="grid grid-cols-2 gap-4">
+              <div class="text-center p-3 bg-[#6cc4ea] bg-opacity-10 rounded-xl">
+                <div class="text-2xl font-bold text-[#013765]">{{ total_modulos | default(0) }}</div>
+                <div class="text-sm text-[#013765] text-opacity-80">Total Módulos</div>
+              </div>
+              <div class="text-center p-3 bg-[#bd5ecf] bg-opacity-10 rounded-xl">
+                <div class="text-2xl font-bold text-[#013765]">{{ modulos_concluidos | default(0) }}</div>
+                <div class="text-sm text-[#013765] text-opacity-80">Concluídos</div>
               </div>
             </div>
           </div>
         </div>
 
+        <!-- Atividade Recente -->
         <div class="space-y-6">
           <div
-            class="bg-white p-6 rounded-xl shadow-lg h-fit transition duration-300 hover:shadow-xl"
+            class="bg-white p-6 rounded-2xl shadow-lg h-fit transition duration-300 hover:shadow-xl border border-[#bd5ecf]"
           >
             <div
-              class="flex justify-between items-center mb-4 pb-3 border-b border-gray-100"
+              class="flex justify-between items-center mb-4 pb-3 border-b border-[#bd5ecf]"
             >
-              <h3 class="text-xl font-semibold text-gray-800 flex items-center">
-                <i class="fas fa-history mr-3 text-primary-blue"></i> Atividade
-                Recente
+              <h3 class="text-xl font-semibold text-[#013765] flex items-center">
+                <i class="fas fa-history mr-3 text-[#bd5ecf] bg-[#bd5ecf] bg-opacity-10 p-2 rounded-lg"></i> 
+                Atividade Recente
               </h3>
             </div>
 
-            <div class="divide-y divide-gray-100">
+            <div class="divide-y divide-[#98e6d6] divide-opacity-30">
               {% for atividade in atividades_recente %}
-              <div class="flex items-center py-3">
+              <div class="flex items-center py-3 group hover:bg-[#edceff] hover:bg-opacity-30 rounded-lg px-2 transition duration-300">
                 <div
-                  class="w-10 h-10 rounded-full bg-gray-100 text-success-cyan flex items-center justify-center mr-4"
+                  class="w-10 h-10 rounded-full bg-[#98e6d6] bg-opacity-20 text-[#98e6d6] flex items-center justify-center mr-4 border border-[#98e6d6] border-opacity-30"
                 >
                   <i class="fas fa-book"></i>
                 </div>
                 <div class="flex-1">
-                  <div class="font-medium text-gray-800">
+                  <div class="font-medium text-[#013765]">
                     Módulo Concluído: {{ atividade.nome }}
                   </div>
-                  <div class="text-xs text-gray-500">
-                    Concluído em: {{
+                  <div class="text-xs text-[#013765] text-opacity-70">
+                    <i class="fas fa-clock mr-1"></i>Concluído em: {{
                     atividade.data_conclusao.strftime('%d/%m/%Y, %H:%M') }}
                   </div>
                 </div>
                 <div
-                  class="bg-success-cyan text-white text-xs font-bold px-2 py-1 rounded-full"
+                  class="bg-[#98e6d6] text-[#013765] text-xs font-bold px-2 py-1 rounded-full"
                 >
                   ✅
                 </div>
               </div>
               {% else %}
-              <div class="p-4 text-center text-gray-500">
-                Nenhuma atividade recente encontrada. Comece um módulo!
+              <div class="p-4 text-center text-[#013765] text-opacity-70 bg-[#edceff] bg-opacity-30 rounded-lg">
+                <i class="fas fa-inbox text-2xl mb-2 text-[#bd5ecf]"></i>
+                <div>Nenhuma atividade recente encontrada.</div>
+                <div class="text-sm mt-1">Comece um módulo para ver seu progresso aqui!</div>
               </div>
               {% endfor %}
+            </div>
+          </div>
+
+          <!-- Ações Rápidas -->
+          <div
+            class="bg-white p-6 rounded-2xl shadow-lg h-fit transition duration-300 hover:shadow-xl border border-[#98e6d6]"
+          >
+            <h3 class="text-xl font-semibold text-[#013765] flex items-center mb-4">
+              <i class="fas fa-bolt mr-3 text-[#98e6d6] bg-[#98e6d6] bg-opacity-10 p-2 rounded-lg"></i>
+              Ações Rápidas
+            </h3>
+            <div class="space-y-3">
+              <a href="{{ url_for('curso_home') }}" class="block w-full bg-[#bd5ecf] hover:bg-[#013765] text-white font-semibold py-3 px-4 rounded-lg text-center transition duration-300 transform hover:scale-105">
+                <i class="fas fa-play-circle mr-2"></i>Continuar Estudando
+              </a>
+              <button class="block w-full bg-[#6cc4ea] hover:bg-[#013765] text-white font-semibold py-3 px-4 rounded-lg text-center transition duration-300 transform hover:scale-105">
+                <i class="fas fa-download mr-2"></i>Baixar Certificado
+              </button>
             </div>
           </div>
         </div>
