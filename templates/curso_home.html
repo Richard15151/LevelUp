@@ -42,6 +42,64 @@
         opacity: 0.7;
         cursor: not-allowed;
       }
+      
+      /* Estilos para o seletor de emojis */
+      .emoji-picker {
+        position: absolute;
+        bottom: 100%;
+        right: 0;
+        background: white;
+        border: 2px solid #bd5ecf;
+        border-radius: 12px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        padding: 12px;
+        width: 280px;
+        max-height: 200px;
+        overflow-y: auto;
+        display: none;
+        z-index: 1000;
+      }
+
+      .emoji-grid {
+        display: grid;
+        grid-template-columns: repeat(8, 1fr);
+        gap: 6px;
+      }
+
+      .emoji-item {
+        padding: 6px;
+        cursor: pointer;
+        text-align: center;
+        border-radius: 8px;
+        font-size: 18px;
+        transition: all 0.2s ease;
+      }
+
+      .emoji-item:hover {
+        background-color: #edceff;
+        transform: scale(1.1);
+      }
+      
+      .emoji-hint {
+        background: linear-gradient(135deg, #98e6d6 0%, #6cc4ea 100%);
+        color: #013765;
+        padding: 12px;
+        border-radius: 12px;
+        margin: 8px 0;
+        font-size: 0.8rem;
+        text-align: center;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        border: 2px solid #bd5ecf;
+      }
+      
+      .emoji-shortcut {
+        background: rgba(255,255,255,0.3);
+        padding: 4px 8px;
+        border-radius: 6px;
+        margin: 0 2px;
+        font-family: monospace;
+        font-weight: bold;
+      }
     </style>
   </head>
 
@@ -205,11 +263,11 @@
         <div class="flex flex-col bg-white p-6 rounded-2xl shadow-lg border border-roxo-cta sticky top-8 h-[600px]">
           <header class="flex justify-between items-center border-b border-verde-claro pb-4 mb-4 flex-shrink-0">
             <div class="flex items-center gap-3">
-              <div class="w-10 h-10 bg-roxo-cta rounded-full flex items-center justify-center">
-                <i class="fas fa-robot text-white"></i>
+              <div class="w-20 h-20 bg-roxo-cta rounded-full flex items-center justify-center">
+                <img src="../static/img/Dino Básico.png" alt="dino básico">
               </div>
               <div>
-                <h3 class="text-lg font-bold text-texto-escuro">Professor Dinossauro</h3>
+                <h3 class="text-lg font-bold text-texto-escuro">Nome Dino</h3>
                 <p class="text-xs text-azul-metodo">Seu assistente de IA</p>
               </div>
             </div>
@@ -248,7 +306,7 @@
             </div>
           </div>
 
-          <footer class="flex items-center border-t border-verde-claro pt-4 mt-4 flex-shrink-0">
+          <footer class="flex items-center border-t border-verde-claro pt-4 mt-4 flex-shrink-0 relative">
             <input
               type="text"
               id="chat-input"
@@ -256,6 +314,24 @@
               class="flex-grow border border-azul-metodo/30 rounded-l-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-roxo-cta focus:border-transparent transition"
               disabled
             />
+            
+            <!-- Botão de emoji -->
+            <button
+              id="emoji-btn"
+              type="button"
+              class="bg-verde-claro hover:bg-azul-metodo text-texto-escuro border border-azul-metodo/30 px-3 py-3 text-sm transition duration-200 flex items-center justify-center"
+              title="Selecionar emoji"
+            >
+              <i class="far fa-smile"></i>
+            </button>
+            
+            <!-- Seletor de emojis -->
+            <div id="emoji-picker" class="emoji-picker">
+              <div class="emoji-grid" id="emoji-grid">
+                <!-- Emojis serão inseridos aqui via JavaScript -->
+              </div>
+            </div>
+            
             <button
               id="btn-enviar"
               class="bg-roxo-cta hover:bg-texto-escuro text-white font-semibold px-4 py-3 rounded-r-lg shadow-md hover:shadow-lg transition duration-200 text-sm"
@@ -279,10 +355,86 @@
         const connectionStatus = document.getElementById("connection-status");
         const iniciarBtn = document.getElementById("iniciarBtn");
         const encerrarBtn = document.getElementById("encerrarBtn");
+        const emojiBtn = document.getElementById("emoji-btn");
+        const emojiPicker = document.getElementById("emoji-picker");
+        const emojiGrid = document.getElementById("emoji-grid");
         const cursoAtual = "{{ curso }}";
+
+        // Lista de emojis populares
+        const popularEmojis = [
+          '😀', '😃', '😄', '😁', '😆', '😅', '😂', '🤣', '😊', '😇',
+          '🙂', '🙃', '😉', '😌', '😍', '🥰', '😘', '😗', '😙', '😚',
+          '😋', '😛', '😝', '😜', '🤪', '🤨', '🧐', '🤓', '😎', '🤩',
+          '🥳', '😏', '😒', '😞', '😔', '😟', '😕', '🙁', '☹️', '😣',
+          '😖', '😫', '😩', '🥺', '😢', '😭', '😤', '😠', '😡', '🤬',
+          '🤯', '😳', '🥵', '🥶', '😱', '😨', '😰', '😥', '😓', '🤗',
+          '🤔', '🤭', '🤫', '🤥', '😶', '😐', '😑', '😬', '🙄', '😯',
+          '😦', '😧', '😮', '😲', '🥱', '😴', '🤤', '😪', '😵', '🤐',
+          '🥴', '🤢', '🤮', '🤧', '😷', '🤒', '🤕', '🤑', '🤠', '😈',
+          '❤️', '👍', '👎', '👏', '🙌', '🤝', '💪', '👀', '🧠', '💡'
+        ];
+
+        // Função para popular o grid de emojis
+        function populateEmojiGrid() {
+          emojiGrid.innerHTML = '';
+          popularEmojis.forEach(emoji => {
+            const emojiElement = document.createElement('div');
+            emojiElement.className = 'emoji-item';
+            emojiElement.textContent = emoji;
+            emojiElement.addEventListener('click', () => {
+              insertEmoji(emoji);
+            });
+            emojiGrid.appendChild(emojiElement);
+          });
+        }
+
+        // Função para inserir emoji no input
+        function insertEmoji(emoji) {
+          const input = messageInput;
+          const start = input.selectionStart;
+          const end = input.selectionEnd;
+          const text = input.value;
+          
+          input.value = text.substring(0, start) + emoji + text.substring(end);
+          input.focus();
+          input.selectionStart = input.selectionEnd = start + emoji.length;
+          
+          hideEmojiPicker();
+        }
+
+        // Funções para mostrar/ocultar o seletor de emojis
+        function showEmojiPicker() {
+          emojiPicker.style.display = 'block';
+        }
+
+        function hideEmojiPicker() {
+          emojiPicker.style.display = 'none';
+        }
+
+        // Função para criar mensagem de dica de emoji
+        function createEmojiHint() {
+          const hintElement = document.createElement("div");
+          hintElement.className = "emoji-hint";
+          hintElement.innerHTML = `
+            <strong>🎉 Como usar emojis:</strong>
+            <div class="mt-2">
+              Clique no botão <i class="far fa-smile"></i> para abrir o seletor<br>
+              Ou use: <span class="emoji-shortcut">Win + .</span> (Windows)<br>
+              <span class="emoji-shortcut">Ctrl + Cmd + Espaço</span> (Mac)
+            </div>
+          `;
+          return hintElement;
+        }
 
         function addMessageToChat(sender, text, type = "normal") {
           const messageElement = document.createElement("div");
+          
+          if (type === "hint") {
+            chatBox.appendChild(createEmojiHint());
+            chatBox.scrollTop = chatBox.scrollHeight;
+            return;
+          }
+
           messageElement.classList.add(
             "message",
             "max-w-[90%]",
@@ -296,7 +448,6 @@
 
           if (sender.toLowerCase() === "user") {
             messageElement.classList.add(
-              "user-message",
               "bg-roxo-cta",
               "text-white",
               "self-end",
@@ -305,7 +456,6 @@
             );
           } else if (sender.toLowerCase() === "bot") {
             messageElement.classList.add(
-              "bot-message",
               "bg-white",
               "text-texto-escuro",
               "border",
@@ -319,7 +469,6 @@
             messageElement.appendChild(senderSpan);
           } else {
             messageElement.classList.add(
-              "status-message",
               "bg-azul-metodo/10",
               "text-azul-metodo",
               "italic",
@@ -345,8 +494,14 @@
         function setChatEnabled(enabled) {
           messageInput.disabled = !enabled;
           sendButton.disabled = !enabled;
+          emojiBtn.disabled = !enabled;
+          
           if (enabled) {
             messageInput.focus();
+            // Mostra dica sobre emojis quando o chat é conectado
+            setTimeout(() => {
+              addMessageToChat(null, null, "hint");
+            }, 1000);
           }
         }
 
@@ -366,7 +521,7 @@
           updateConnectionStatus("Conectando...", "bg-yellow-500");
 
           socket.on("connect", () => {
-            updateConnectionStatus("Online", "bg-verde-claro");
+            updateConnectionStatus("Online", "bg-green-500");
             addMessageToChat("Status", "Conectado ao Professor Dinossauro!", "status");
             setChatEnabled(true);
           });
@@ -414,9 +569,36 @@
           }
         }
 
+        // Função para mostrar dica sobre emojis
+        function showEmojiHint() {
+          addMessageToChat(null, null, "hint");
+        }
+
+        // Inicializar o grid de emojis
+        populateEmojiGrid();
+
+        // Event listeners
         iniciarBtn.addEventListener("click", iniciarConversa);
         encerrarBtn.addEventListener("click", encerrarConversa);
         sendButton.addEventListener("click", sendMessageToServer);
+        
+        // Evento para o botão de emoji
+        emojiBtn.addEventListener("click", (e) => {
+          e.preventDefault();
+          if (emojiPicker.style.display === 'block') {
+            hideEmojiPicker();
+          } else {
+            showEmojiPicker();
+          }
+        });
+
+        // Fecha o seletor de emojis quando clicar fora
+        document.addEventListener('click', (e) => {
+          if (!emojiPicker.contains(e.target) && e.target !== emojiBtn) {
+            hideEmojiPicker();
+          }
+        });
+
         messageInput.addEventListener("keypress", (event) => {
           if (event.key === "Enter") sendMessageToServer();
         });
