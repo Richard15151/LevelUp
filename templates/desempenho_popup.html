@@ -11,73 +11,115 @@
     />
 
     <script>
-      // Configuração do Tailwind (necessário para as classes de cor)
       tailwind.config = {
         theme: {
           extend: {
             colors: {
-              "primary-purple": "#6a11cb",
-              "primary-blue": "#2575fc",
-              "accent-green": "#2ecc71",
-            },
-          },
-        },
-      };
+              'fundo-claro': '#edceff',
+              'texto-escuro': '#013765',
+              'verde-claro': '#98e6d6',
+              'roxo-cta': '#bd5ecf',
+              'azul-metodo': '#6cc4ea',
+            }
+          }
+        }
+      }
     </script>
   </head>
-  <body
-    class="bg-gray-100 flex items-center justify-center min-h-screen font-sans"
-  >
-    {% set cor_principal = 'primary-purple' if aprovado else 'red-500' %} {% set
-    cor_secundaria = 'primary-blue' if aprovado else 'red-700' %} {% set icone =
-    'fas fa-medal' if aprovado else 'fas fa-redo' %}
+  <body class="bg-fundo-claro flex items-center justify-center min-h-screen font-sans p-4">
+    {% set cor_principal = 'roxo-cta' if aprovado else 'red-500' %}
+    {% set cor_secundaria = 'azul-metodo' if aprovado else 'red-700' %}
+    {% set cor_destaque = 'verde-claro' if aprovado else 'yellow-400' %}
+    {% set icone = 'fas fa-trophy' if aprovado else 'fas fa-redo-alt' %}
 
-    <div
-      class="bg-white p-8 rounded-lg shadow-2xl max-w-md w-full text-center border-t-8 border-{{ cor_secundaria }}"
-    >
-      <div class="text-5xl mb-4 text-{{ cor_secundaria }}">
-        {% if aprovado %} 🎉 {% else %} 😔 {% endif %}
+    <div class="bg-white p-8 rounded-2xl shadow-2xl max-w-md w-full text-center border-4 border-{{ cor_destaque }} transform hover:scale-[1.02] transition duration-300">
+      <!-- Ícone animado -->
+      <div class="w-24 h-24 mx-auto mb-6 rounded-full bg-{{ cor_destaque }}/20 flex items-center justify-center">
+        <div class="text-4xl text-{{ cor_principal }}">
+          {% if aprovado %} 
+            <i class="fas fa-trophy"></i>
+          {% else %} 
+            <i class="fas fa-redo-alt"></i>
+          {% endif %}
+        </div>
       </div>
 
-      <h1 class="text-3xl font-extrabold mb-2 text-gray-800">
-        {% if aprovado %} Módulo Concluído! {% else %} Tente Novamente {% endif
-        %}
+      <h1 class="text-3xl font-extrabold mb-4 text-texto-escuro">
+        {% if aprovado %} 
+          Módulo Concluído! 
+        {% else %} 
+          Continue Praticando
+        {% endif %}
       </h1>
 
-      <p class="mb-8 text-gray-600">Seu desempenho foi registrado.</p>
+      <p class="mb-8 text-texto-escuro/80 text-lg">
+        {% if aprovado %} 
+          🎊 Excelente trabalho! 
+        {% else %} 
+          💪 Você está quase lá!
+        {% endif %}
+      </p>
 
-      <div class="grid grid-cols-3 gap-4 mb-8 border-t pt-6">
-        <div class="p-3 bg-green-100 rounded-lg">
-          <p class="text-2xl font-bold text-green-700">{{ acertos }}</p>
-          <p class="text-sm text-green-600">Acertos</p>
+      <!-- Estatísticas -->
+      <div class="grid grid-cols-3 gap-4 mb-8 border-t border-verde-claro pt-6">
+        <div class="p-4 bg-verde-claro/20 rounded-xl border border-verde-claro">
+          <p class="text-2xl font-bold text-texto-escuro">{{ acertos }}</p>
+          <p class="text-sm text-texto-escuro font-semibold">Acertos</p>
         </div>
 
-        <div class="p-3 bg-red-100 rounded-lg">
-          <p class="text-2xl font-bold text-red-700">{{ erros }}</p>
-          <p class="text-sm text-red-600">Erros</p>
+        <div class="p-4 bg-roxo-cta/10 rounded-xl border border-roxo-cta">
+          <p class="text-2xl font-bold text-texto-escuro">{{ erros }}</p>
+          <p class="text-sm text-texto-escuro font-semibold">Erros</p>
         </div>
 
-        <div class="p-3 bg-{{ cor_principal }}/10 rounded-lg">
-          <p class="text-3xl font-extrabold text-{{ cor_secundaria }}">
-            {{ nota_final | round(1) }}<span class="text-xl">%</span>
+        <div class="p-4 bg-azul-metodo/10 rounded-xl border border-azul-metodo">
+          <p class="text-3xl font-extrabold text-texto-escuro">
+            {{ nota_final | round(1) }}<span class="text-lg">%</span>
           </p>
-          <p class="text-sm text-{{ cor_secundaria }}">Nota Final</p>
+          <p class="text-sm text-texto-escuro font-semibold">Nota Final</p>
         </div>
       </div>
 
-      <p class="text-lg mb-6 font-semibold text-gray-700">
-        {% if aprovado %} Parabéns! Você acertou {{ acertos }} de {{
-        total_perguntas }} questões e desbloqueou o próximo módulo! {% else %}
-        Você acertou apenas {{ acertos }} de {{ total_perguntas }}. É necessário
-        acertar 7 ou mais. Revise o vídeo e tente novamente! {% endif %}
-      </p>
+      <!-- Mensagem personalizada -->
+      <div class="mb-6 p-4 rounded-xl bg-{{ cor_destaque }}/10 border border-{{ cor_destaque }}">
+        <p class="text-texto-escuro font-semibold">
+          {% if aprovado %} 
+            🎉 Parabéns! Você acertou <span class="text-roxo-cta">{{ acertos }}</span> de 
+            <span class="text-azul-metodo">{{ total_perguntas }}</span> questões e desbloqueou o próximo módulo!
+          {% else %} 
+            📚 Você acertou <span class="text-roxo-cta">{{ acertos }}</span> de 
+            <span class="text-azul-metodo">{{ total_perguntas }}</span>. É necessário acertar 7 ou mais. 
+            Revise o conteúdo e tente novamente!
+          {% endif %}
+        </p>
+      </div>
 
+      <!-- Botão de ação -->
       <a
         href="{{ url_for('curso_home') }}"
-        class="w-full inline-block bg-{{ cor_secundaria }} hover:bg-{{ cor_principal }} text-white font-bold py-3 px-4 rounded-lg transition duration-200 shadow-lg"
+        class="w-full inline-block bg-roxo-cta hover:bg-texto-escuro text-white font-bold py-4 px-6 rounded-xl transition duration-200 shadow-lg hover:shadow-xl transform hover:scale-105"
       >
-        <i class="{{ icone }} mr-2"></i> Voltar para a Home do Curso
+        <i class="{{ icone }} mr-3"></i>
+        {% if aprovado %}
+          Continuar para o Próximo Módulo
+        {% else %}
+          Voltar e Revisar
+        {% endif %}
       </a>
+
+      <!-- Progresso adicional -->
+      <div class="mt-6 pt-4 border-t border-azul-metodo/30">
+        <div class="flex justify-between text-sm text-texto-escuro/70 mb-2">
+          <span>Progresso do Curso</span>
+          <span>{{ progresso_curso | default(0) }}%</span>
+        </div>
+        <div class="w-full bg-gray-200 rounded-full h-2">
+          <div 
+            class="bg-verde-claro h-2 rounded-full transition-all duration-1000" 
+            style="width: {{ progresso_curso | default(0) }}%"
+          ></div>
+        </div>
+      </div>
     </div>
   </body>
 </html>
