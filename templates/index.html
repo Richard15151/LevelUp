@@ -27,86 +27,86 @@
 <body class="bg-fundo-claro text-texto-escuro overflow-x-hidden max-w-[100vw]">
 
     <header class="bg-verde-claro shadow-sm">
-        <nav class="max-w-6xl mx-auto flex items-center justify-between px-6 py-4">
+        <nav class="max-w-6xl mx-auto flex items-center justify-between px-4 sm:px-6 py-4">
             <a href="{{ url_for('index') }}" class="flex items-center gap-2">
-                <img src="../static/img/logo.png" alt="logo" class="w-16 md:w-20">
+                <img src="../static/img/logo.png" alt="logo" class="w-12 md:w-16 lg:w-20">
             </a>
 
-            <ul class="hidden md:flex items-center gap-6 font-medium text-texto-escuro">
+            <ul class="hidden md:flex items-center gap-4 lg:gap-6 font-medium text-texto-escuro">
                 <li><a href="#cursos" class="hover:text-roxo-cta transition">Cursos</a></li>
                 <li><a href="#metodologia" class="hover:text-roxo-cta transition">Metodologia</a></li>
                 <li><a href="#sobre" class="hover:text-roxo-cta transition">Quem somos</a></li>
             </ul>
 
-            <a href="{{ url_for('login') }}" class="bg-roxo-cta text-white font-semibold px-4 py-2 rounded hover:bg-texto-escuro transition md:w-auto">
+            <a href="{{ url_for('login') }}" class="bg-roxo-cta text-white font-semibold px-3 py-2 md:px-4 md:py-2 rounded hover:bg-texto-escuro transition text-sm md:text-base">
                 Fazer Login
             </a>
         </nav>
     </header>
 
-    <section class="bg-roxo-cta py-16 px-4">
-        <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
+    <section class="bg-roxo-cta py-12 md:py-16 px-4">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 md:gap-8">
             <div class="flex justify-center md:justify-start">
-                <img src="../static/img/Logo dino circulada.png" alt="logo" class="h-60 md:h-60">
+                <img src="../static/img/Logo dino circulada.png" alt="logo" class="h-48 md:h-60">
             </div>
             
             <div class="text-center md:text-left">
-                <h1 class="text-4xl md:text-5xl font-bold text-white">Avanço para o futuro</h1>
-                <p class="text-xl text-white mt-4 opacity-95">Lorem ipsum dolor sit, amet consectetur adipisicing elit.</p>
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold text-white">Avanço para o futuro</h1>
+                <p class="text-lg md:text-xl text-white mt-4 opacity-95">Dando um Level Up no seu idioma! </p>
             </div>
         </div>
     </section>
 
-    <section id="cursos" class="bg-fundo-claro py-16 w-full overflow-x-hidden">
-        <div class="max-w-5xl mx-auto px-4 md:px-6 space-y-20">
+    <section id="cursos" class="bg-fundo-claro py-12 md:py-16 w-full overflow-x-hidden">
+        <div class="max-w-5xl mx-auto px-4 md:px-6 space-y-16 md:space-y-20">
 
-            <div class="flex flex-col md:flex-row items-center justify-between gap-10">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-8 md:gap-10">
                 <div class="w-full md:w-1/2 flex justify-center md:justify-start">
-                    <div class="bg-texto-escuro rounded-lg p-6 flex flex-col items-center shadow-lg">
-                        <div class="bg-gray-500 w-60 h-48 rounded-lg mb-4 flex items-center justify-center">
-                            <span class="text-white font-bold text-lg">Inglês</span>
+                    <div class="bg-texto-escuro rounded-lg p-4 md:p-6 flex flex-col items-center shadow-lg w-full max-w-sm">
+                        <div class="w-48 h-48 md:w-60 md:h-60 rounded-lg mb-4 flex items-center justify-center">
+                            <img src="../static/img/ingles.png" alt="inglês" class="rounded-lg w-full h-full object-cover">
                         </div>
-                        <span class="text-white font-bold mb-4 text-xl">Curso de Inglês</span>
+                        <span class="text-white font-bold mb-4 text-lg md:text-xl">Curso de Inglês</span>
                         
                         <a href="{{ url_for('pagamento_ficticio', curso_acesso='Inglês') }}" 
-                           class="bg-roxo-cta text-white font-semibold px-6 py-3 rounded-lg shadow-md hover:bg-texto-escuro transition">
+                           class="bg-roxo-cta text-white font-semibold px-4 py-2 md:px-6 md:py-3 rounded-lg shadow-md hover:bg-texto-escuro transition text-sm md:text-base w-full text-center">
                             Assinar agora
                         </a>
                     </div>
                 </div>
 
-                <div class="w-full md:w-1/2 text-center md:text-left">
-                    <h2 class="text-4xl font-bold mb-4 text-texto-escuro">Curso de Inglês</h2>
-                    <p class="text-lg leading-relaxed text-texto-escuro">
-                        Lorem, ipsum dolor sit amet consectetur adipisicing elit. Dignissimos, nihil eligendi illum natus sunt minima rerum id inventore, quibusdam dolor earum explicabo repudiandae similique. Suscipit odio rerum laudantium magni nesciunt?
+                <div class="w-full md:w-1/2 text-center md:text-left mt-6 md:mt-0">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-4 text-texto-escuro">Curso de Inglês</h2>
+                    <p class="text-base md:text-lg leading-relaxed text-texto-escuro">
+                        Nosso curso de Inglês oferece alta qualidade de estudos e fornece os melhores conteúdo para os alunos. Uma metodologia focada em aulas práticas e integradas para que cada estudante aprenda em seu devido nível.
                     </p>
                 </div>
             </div>
 
             <div class="inline-flex items-center justify-center w-full">
-                <hr class="w-60 h-px my-8 bg-texto-escuro border-0">
+                <hr class="w-48 md:w-60 h-px my-8 bg-texto-escuro border-0">
                 <span class="absolute px-3 font-bold text-texto-escuro -translate-x-1/2 bg-fundo-claro left-1/2">ou</span>
             </div>
 
-            <div class="flex flex-col md:flex-row-reverse items-center justify-between gap-10">
+            <div class="flex flex-col md:flex-row-reverse items-center justify-between gap-8 md:gap-10">
                 <div class="w-full md:w-1/2 flex justify-center md:justify-end">
-                    <div class="bg-texto-escuro rounded-lg p-6 flex flex-col items-center shadow-lg">
-                        <div class="bg-gray-500 w-60 h-48 rounded-lg mb-4 flex items-center justify-center">
-                            <span class="text-white font-bold text-lg">Espanhol</span>
+                    <div class="bg-texto-escuro rounded-lg p-4 md:p-6 flex flex-col items-center shadow-lg w-full max-w-sm">
+                        <div class="w-48 h-48 md:w-60 md:h-60 rounded-lg mb-4 flex items-center justify-center">
+                            <img src="../static/img/espanhol.png" alt="inglês" class="rounded-lg w-full h-full object-cover">
                         </div>
-                        <span class="text-white font-bold mb-4 text-xl">Curso de Espanhol</span>
+                        <span class="text-white font-bold mb-4 text-lg md:text-xl">Curso de Espanhol</span>
                         
                         <a href="{{ url_for('pagamento_ficticio', curso_acesso='Espanhol') }}" 
-                           class="bg-roxo-cta text-white font-semibold px-6 py-3 rounded-lg shadow-md hover:bg-texto-escuro transition">
+                           class="bg-roxo-cta text-white font-semibold px-4 py-2 md:px-6 md:py-3 rounded-lg shadow-md hover:bg-texto-escuro transition text-sm md:text-base w-full text-center">
                             Assinar agora
                         </a>
                     </div>
                 </div>
 
-                <div class="w-full md:w-1/2 text-center md:text-left">
-                    <h2 class="text-4xl font-bold mb-4 text-texto-escuro">Curso de Espanhol</h2>
-                    <p class="text-lg leading-relaxed text-texto-escuro">
-                        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ipsam, repudiandae nihil harum nemo quis deleniti sit quam similique facilis asperiores consequatur molestias voluptas consequuntur minima earum delectus! Facilis, repellendus esse.
+                <div class="w-full md:w-1/2 text-center md:text-left mt-6 md:mt-0">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-4 text-texto-escuro">Curso de Espanhol</h2>
+                    <p class="text-base md:text-lg leading-relaxed text-texto-escuro">
+                        Nosso curso de Espanhol oferece alta qualidade de estudos e fornece os melhores conteúdo para os alunos. Uma metodologia focada em aulas práticas e integradas para que cada estudante aprenda em seu devido nível. 
                     </p>
                 </div>
             </div>
@@ -114,94 +114,92 @@
         </div>
     </section>
 
-    <section id="metodologia" class="bg-azul-metodo py-16 text-white">
+    <section id="metodologia" class="bg-azul-metodo py-12 md:py-16 text-white">
         <div class="max-w-5xl mx-auto text-center px-4">
-            <h2 class="text-4xl font-bold mb-12">Nossa Metodologia</h2>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-8">
-                <div class="bg-verde-claro rounded-xl p-6 border border-white">
-                    <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-4">
-                        <i class="fas fa-play-circle text-texto-escuro text-2xl"></i>
+            <h2 class="text-3xl md:text-4xl font-bold mb-8 md:mb-12">Nossa Metodologia</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+                <div class="bg-verde-claro rounded-xl p-4 md:p-6 border border-white">
+                    <div class="w-14 h-14 md:w-16 md:h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-play-circle text-texto-escuro text-xl md:text-2xl"></i>
                     </div>
-                    <h3 class="font-bold text-2xl mb-4 text-texto-escuro">Videoaulas Interativas</h3>
-                    <p class="text-texto-escuro">Lorem ipsum dolor, sit amet consectetur adipisicing elit.</p>
+                    <h3 class="font-bold text-xl md:text-2xl mb-4 text-texto-escuro">Videoaulas Interativas</h3>
+                    <p class="text-texto-escuro text-sm md:text-base">Aprenda de forma dinâmica com vídeo aulas que unem teoria e exercícios! A cada lição, consolida o aprendizado de um jeito descontraído e eficiente. </p>
                 </div>
-                <div class="bg-verde-claro rounded-xl p-6 border border-white">
-                    <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-4">
-                        <i class="fas fa-tasks text-texto-escuro text-2xl"></i>
+                <div class="bg-verde-claro rounded-xl p-4 md:p-6 border border-white">
+                    <div class="w-14 h-14 md:w-16 md:h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-tasks text-texto-escuro text-xl md:text-2xl"></i>
                     </div>
-                    <h3 class="font-bold text-2xl mb-4 text-texto-escuro">Exercícios Práticos</h3>
-                    <p class="text-texto-escuro">Lorem ipsum dolor, sit amet consectetur adipisicing elit.</p>
+                    <h3 class="font-bold text-xl md:text-2xl mb-4 text-texto-escuro">Exercícios Práticos</h3>
+                    <p class="text-texto-escuro text-sm md:text-base">Nossos exercícios práticos ajudam a fixar o conteúdo, testar seus conhecimentos e acompanhar sua evolução passo a passo, com correções e feedback instantâneo.</p>
                 </div>
-                <div class="bg-verde-claro rounded-xl p-6 border border-white">
-                    <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-4">
-                        <i class="fas fa-robot text-texto-escuro text-2xl"></i>
+                <div class="bg-verde-claro rounded-xl p-4 md:p-6 border border-white sm:col-span-2 lg:col-span-1">
+                    <div class="w-14 h-14 md:w-16 md:h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-robot text-texto-escuro text-xl md:text-2xl"></i>
                     </div>
-                    <h3 class="font-bold text-2xl mb-4 text-texto-escuro">Chatbot IA</h3>
-                    <p class="text-texto-escuro">Lorem ipsum dolor, sit amet consectetur adipisicing elit.</p>
+                    <h3 class="font-bold text-xl md:text-2xl mb-4 text-texto-escuro">Chatbot IA</h3>
+                    <p class="text-texto-escuro text-sm md:text-base">Conte com um assistente inteligente sempre disponível para tirar dúvidas, explicar conceitos e te guiar nos estudos. Rápido, interativo e personalizado. </p>
                 </div>
             </div>
         </div>
     </section>
 
-    <section id="sobre" class="bg-fundo-claro py-16">
-        <div class="max-w-5xl mx-auto flex flex-col md:flex-row items-center gap-10 px-4 md:px-6">
+    <section id="sobre" class="bg-fundo-claro py-12 md:py-16">
+        <div class="max-w-5xl mx-auto flex flex-col md:flex-row items-center gap-8 md:gap-10 px-4 md:px-6">
             <div class="w-full md:w-1/2">
-                <h2 class="text-3xl font-bold mb-6 text-texto-escuro">Sobre Nós</h2>
-                <p class="text-lg leading-relaxed text-texto-escuro">
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatibus, inventore dicta eligendi error facere deleniti praesentium cupiditate explicabo! Sed odit saepe ad eius, inventore cum in illum assumenda deserunt quae?
+                <h2 class="text-2xl md:text-3xl font-bold mb-6 text-texto-escuro">Sobre Nós</h2>
+                <p class="text-base md:text-lg leading-relaxed text-texto-escuro">
+                    A Level Up! é uma empresa dedicada ao ensino de línguas estrangeiras, destinada aos jovens que desejam melhorar sua proficiência no inglês e espanhol, garantindo destaque nos vestibulares e no futuro profissional. 
                 </p>
             </div>
             <div class="w-full md:w-1/2">
-                <div class="bg-verde-claro w-full h-64 rounded-2xl flex items-center justify-center text-texto-escuro text-lg font-semibold border-2 border-white">
-                    Nossa Equipe
-                </div>
+                <img src="../static/img/logo verde água.png" alt="sobre nós" class="w-full h-48 md:h-64 flex items-center justify-center object-contain">
             </div>
         </div>
     </section>
 
-    <footer class="bg-texto-escuro text-white pt-12 pb-6">
+    <footer class="bg-texto-escuro text-white pt-8 md:pt-12 pb-6">
         <div class="max-w-6xl mx-auto px-4 md:px-6">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 md:gap-8 mb-8">
                 
                 <div class="md:col-span-2">
                     <div class="flex items-center mb-4">
-                        <img src="../static/img/logo.png" alt="logo" class="w-30 h-16 mr-3">
+                        <img src="../static/img/logo.png" alt="logo" class="w-24 h-12 md:w-30 md:h-16 mr-3">
                     </div>
-                    <p class="text-azul-metodo mb-4 max-w-md">
-                        Lorem ipsum dolor sit, amet consectetur adipisicing elit.
+                    <p class="text-azul-metodo mb-4 max-w-md text-sm md:text-base">
+                        Dando um Level Up no seu idioma! 
                     </p>
                     <div class="flex space-x-4">
                         <a href="#" class="text-azul-metodo hover:text-verde-claro transition">
-                            <i class="fab fa-instagram text-xl"></i>
+                            <i class="fab fa-instagram text-lg md:text-xl"></i>
                         </a>
                         <a href="#" class="text-azul-metodo hover:text-verde-claro transition">
-                            <i class="fab fa-whatsapp text-xl"></i>
+                            <i class="fab fa-whatsapp text-lg md:text-xl"></i>
                         </a>
                         <a href="#" class="text-azul-metodo hover:text-verde-claro transition">
-                            <i class="fas fa-envelope text-xl"></i>
+                            <i class="fas fa-envelope text-lg md:text-xl"></i>
                         </a>
                     </div>
                 </div>
                 
                 <div>
-                    <h3 class="font-bold text-lg mb-4 text-verde-claro">Links Rápidos</h3>
+                    <h3 class="font-bold text-base md:text-lg mb-3 md:mb-4 text-verde-claro">Links Rápidos</h3>
                     <ul class="space-y-2">
-                        <li><a href="#cursos" class="text-azul-metodo hover:text-verde-claro transition">Cursos</a></li>
-                        <li><a href="#metodologia" class="text-azul-metodo hover:text-verde-claro transition">Metodologia</a></li>
-                        <li><a href="#sobre" class="text-azul-metodo hover:text-verde-claro transition">Sobre Nós</a></li>
+                        <li><a href="#cursos" class="text-azul-metodo hover:text-verde-claro transition text-sm md:text-base">Cursos</a></li>
+                        <li><a href="#metodologia" class="text-azul-metodo hover:text-verde-claro transition text-sm md:text-base">Metodologia</a></li>
+                        <li><a href="#sobre" class="text-azul-metodo hover:text-verde-claro transition text-sm md:text-base">Sobre Nós</a></li>
                     </ul>
                 </div>
                 
                 <div>
-                    <h3 class="font-bold text-lg mb-4 text-verde-claro">Contato</h3>
-                    <ul class="space-y-2 text-azul-metodo">
+                    <h3 class="font-bold text-base md:text-lg mb-3 md:mb-4 text-verde-claro">Contato</h3>
+                    <ul class="space-y-2 text-azul-metodo text-sm md:text-base">
                         <li class="flex items-start">
                             <i class="fas fa-envelope mt-1 mr-2 text-sm"></i>
-                            <span>contato@levelup.com</span>
+                            <span>levelup@gmail.com</span>
                         </li>
                         <li class="flex items-start">
                             <i class="fas fa-phone mt-1 mr-2 text-sm"></i>
-                            <span>(15) 9999-9999</span>
+                            <span>(15) 99123-4567</span>
                         </li>
                         <li class="flex items-start">
                             <i class="fas fa-map-marker-alt mt-1 mr-2 text-sm"></i>
@@ -211,11 +209,11 @@
                 </div>
             </div>
             
-            <div class="pt-8 border-t border-azul-metodo flex flex-col md:flex-row justify-between items-center">
-                <p class="text-azul-metodo text-sm mb-4 md:mb-0"> 
+            <div class="pt-6 md:pt-8 border-t border-azul-metodo flex flex-col md:flex-row justify-between items-center">
+                <p class="text-azul-metodo text-xs md:text-sm mb-4 md:mb-0"> 
                     2025 Level Up! &copy; Todos os direitos reservados.
                 </p>
-                <div class="flex space-x-6 text-sm text-azul-metodo">
+                <div class="flex space-x-4 md:space-x-6 text-xs md:text-sm text-azul-metodo">
                     <a href="#" class="hover:text-verde-claro transition">Política de Privacidade</a>
                     <a href="#" class="hover:text-verde-claro transition">Termos de Uso</a>
                 </div>
