@@ -45,84 +45,84 @@
   <body class="bg-[#edceff] font-sans min-h-screen flex flex-col">
     <header class="bg-white shadow-md">
       <div
-        class="max-w-5xl mx-auto px-4 py-3 flex justify-between items-center"
+        class="max-w-5xl mx-auto px-3 sm:px-4 py-3 flex justify-between items-center"
       >
         <a
           href="{{ url_for('curso_home') }}"
-          class="text-[#bd5ecf] hover:text-[#013765] font-semibold transition duration-300 flex items-center"
+          class="text-[#bd5ecf] hover:text-[#013765] font-semibold transition duration-300 flex items-center text-sm md:text-base"
         >
-          <i class="fas fa-arrow-left mr-2 bg-[#bd5ecf] text-white p-2 rounded-lg"></i> 
+          <i class="fas fa-arrow-left mr-2 bg-[#bd5ecf] text-white p-1.5 md:p-2 rounded-lg text-xs md:text-base"></i> 
           Voltar para o Curso
         </a>
         <a
           href="{{ url_for('logout') }}"
-          class="text-sm text-[#bd5ecf] hover:bg-[#bd5ecf] hover:text-white font-medium border border-[#bd5ecf] px-3 py-2 rounded-lg transition duration-300"
+          class="text-xs md:text-sm text-[#bd5ecf] hover:bg-[#bd5ecf] hover:text-white font-medium border border-[#bd5ecf] px-2 py-1.5 md:px-3 md:py-2 rounded-lg transition duration-300"
         >
-          <i class="fas fa-sign-out-alt mr-2"></i>Sair
+          <i class="fas fa-sign-out-alt mr-1 md:mr-2"></i>Sair
         </a>
       </div>
     </header>
 
-    <main class="max-w-5xl mx-auto px-4 py-10 flex-grow w-full">
+    <main class="max-w-5xl mx-auto px-3 sm:px-4 py-6 md:py-10 flex-grow w-full">
       <!-- Header do Perfil -->
       <div
-        class="p-8 rounded-2xl shadow-2xl mb-8 relative overflow-hidden border border-[#98e6d6] bg-[#bd5ecf]"
+        class="p-4 md:p-6 lg:p-8 rounded-2xl shadow-2xl mb-6 md:mb-8 relative overflow-hidden border border-[#98e6d6] bg-[#bd5ecf]"
       >
         <div
-          class="flex flex-col md:flex-row items-start md:items-center space-y-6 md:space-y-0 md:space-x-8 text-white"
+          class="flex flex-col md:flex-row items-start md:items-center space-y-4 md:space-y-0 md:space-x-6 lg:space-x-8 text-white"
         >
           <div
-            class="flex-shrink-0 w-24 h-24 rounded-full bg-white flex items-center justify-center border-4 border-[#98e6d6] shadow-xl"
+            class="flex-shrink-0 w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 rounded-full bg-white flex items-center justify-center border-4 border-[#98e6d6] shadow-xl mx-auto md:mx-0"
           >
-            <i class="fas fa-user text-4xl text-[#bd5ecf]"></i>
+            <i class="fas fa-user text-2xl md:text-3xl lg:text-4xl text-[#bd5ecf]"></i>
           </div>
 
-          <div class="flex-grow space-y-2">
-            <p class="text-3xl font-bold">{{ nome }}</p>
-            <p class="text-lg opacity-90">{{ email }}</p>
+          <div class="flex-grow space-y-1 md:space-y-2 text-center md:text-left">
+            <p class="text-xl md:text-2xl lg:text-3xl font-bold">{{ nome }}</p>
+            <p class="text-base md:text-lg opacity-90 break-all">{{ email }}</p>
 
-            <div class="pt-3">
+            <div class="pt-2 md:pt-3">
               <span
-                class="inline-block bg-white bg-opacity-20 text-white text-sm font-semibold px-4 py-2 rounded-full backdrop-blur-sm border border-white border-opacity-30"
+                class="inline-block bg-white bg-opacity-20 text-white text-xs md:text-sm font-semibold px-3 py-1.5 md:px-4 md:py-2 rounded-full backdrop-blur-sm border border-white border-opacity-30"
               >
-                <i class="fas fa-graduation-cap mr-2"></i>Curso: {{ curso }}
+                <i class="fas fa-graduation-cap mr-1 md:mr-2"></i>Curso: {{ curso }}
               </span>
             </div>
           </div>
 
-          <div class="flex-shrink-0">
-            <div class="bg-white bg-opacity-20 rounded-xl p-4 text-center backdrop-blur-sm">
-              <div class="text-2xl font-bold">{{ modulos_concluidos | default(0) }}</div>
-              <div class="text-sm opacity-90">Módulos Concluídos</div>
+          <div class="flex-shrink-0 w-full md:w-auto mt-4 md:mt-0">
+            <div class="bg-white bg-opacity-20 rounded-xl p-3 md:p-4 text-center backdrop-blur-sm w-full md:w-auto">
+              <div class="text-xl md:text-2xl font-bold">{{ modulos_concluidos | default(0) }}</div>
+              <div class="text-xs md:text-sm opacity-90">Módulos Concluídos</div>
             </div>
           </div>
         </div>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
         <!-- Progresso do Curso -->
-        <div class="space-y-6">
+        <div class="space-y-4 md:space-y-6">
           <div
-            class="bg-white p-6 rounded-2xl shadow-lg h-fit transition duration-300 hover:shadow-xl border border-[#98e6d6]"
+            class="bg-white p-4 md:p-6 rounded-2xl shadow-lg h-fit transition duration-300 hover:shadow-xl border border-[#98e6d6]"
           >
             <div
-              class="flex justify-between items-center mb-4 pb-3 border-b border-[#98e6d6]"
+              class="flex justify-between items-center mb-3 md:mb-4 pb-2 md:pb-3 border-b border-[#98e6d6]"
             >
-              <h3 class="text-xl font-semibold text-[#013765] flex items-center">
-                <i class="fas fa-tasks mr-3 text-[#bd5ecf] bg-[#bd5ecf] bg-opacity-10 p-2 rounded-lg"></i> 
+              <h3 class="text-lg md:text-xl font-semibold text-[#013765] flex items-center">
+                <i class="fas fa-tasks mr-2 md:mr-3 text-[#bd5ecf] bg-[#bd5ecf] bg-opacity-10 p-1.5 md:p-2 rounded-lg text-sm md:text-base"></i> 
                 Progresso do Curso
               </h3>
               <a
                 href="{{ url_for('curso_home') }}"
-                class="text-[#bd5ecf] hover:text-[#013765] text-sm font-medium transition duration-300"
+                class="text-[#bd5ecf] hover:text-[#013765] text-xs md:text-sm font-medium transition duration-300"
                 >Ir para o Curso</a
               >
             </div>
 
-            <div class="space-y-4">
+            <div class="space-y-3 md:space-y-4">
               <div>
                 <div
-                  class="flex justify-between text-base font-semibold text-[#013765] mb-2"
+                  class="flex justify-between text-sm md:text-base font-semibold text-[#013765] mb-1 md:mb-2"
                 >
                   <span
                     >Módulos Concluídos ({{ modulos_concluidos | default(0) }}
@@ -135,7 +135,7 @@
                 </div>
 
                 <div
-                  class="w-full bg-gray-200 h-3 rounded-full overflow-hidden"
+                  class="w-full bg-gray-200 h-2 md:h-3 rounded-full overflow-hidden"
                   style="--progresso: {{ progresso_curso | default(0) }}%;"
                 >
                   <div
@@ -145,49 +145,50 @@
                 </div>
               </div>
 
-              <div class="p-4 bg-[#98e6d6] bg-opacity-10 rounded-lg text-sm text-[#013765] border border-[#98e6d6] border-opacity-30">
+              <div class="p-3 md:p-4 bg-[#98e6d6] bg-opacity-10 rounded-lg text-xs md:text-sm text-[#013765] border border-[#98e6d6] border-opacity-30">
                 {% if progresso_curso == 100 %}
-                <i class="fas fa-award text-[#98e6d6] mr-2"></i>
-                <span class="font-semibold">Parabéns! Você concluiu seu curso!</span>
+                <i class="fas fa-award text-[#98e6d6] mr-1 md:mr-2"></i>
+                <span class="font-semibold">Parabéns!</span> Você completou todos os módulos do curso!
                 {% else %}
-                <i class="fas fa-flag text-[#98e6d6] mr-2"></i>
-                <span class="font-semibold">Faltam {{ total_modulos - modulos_concluidos }} módulos para completar seu curso.</span>
+                <i class="fas fa-rocket text-[#98e6d6] mr-1 md:mr-2"></i>
+                Continue assim! Você está indo muito bem no curso.
                 {% endif %}
               </div>
             </div>
           </div>
 
-          <!-- Estatísticas Rápidas -->
+          <!-- Ações Rápidas -->
           <div
-            class="bg-white p-6 rounded-2xl shadow-lg h-fit transition duration-300 hover:shadow-xl border border-[#6cc4ea]"
+            class="bg-white p-4 md:p-6 rounded-2xl shadow-lg h-fit transition duration-300 hover:shadow-xl border border-[#98e6d6]"
           >
-            <h3 class="text-xl font-semibold text-[#013765] flex items-center mb-4">
-              <i class="fas fa-chart-bar mr-3 text-[#6cc4ea] bg-[#6cc4ea] bg-opacity-10 p-2 rounded-lg"></i>
-              Estatísticas
+            <h3 class="text-lg md:text-xl font-semibold text-[#013765] flex items-center mb-3 md:mb-4">
+              <i class="fas fa-bolt mr-2 md:mr-3 text-[#98e6d6] bg-[#98e6d6] bg-opacity-10 p-1.5 md:p-2 rounded-lg text-sm md:text-base"></i>
+              Ações Rápidas
             </h3>
-            <div class="grid grid-cols-2 gap-4">
-              <div class="text-center p-3 bg-[#6cc4ea] bg-opacity-10 rounded-xl">
-                <div class="text-2xl font-bold text-[#013765]">{{ total_modulos | default(0) }}</div>
-                <div class="text-sm text-[#013765] text-opacity-80">Total Módulos</div>
-              </div>
-              <div class="text-center p-3 bg-[#bd5ecf] bg-opacity-10 rounded-xl">
-                <div class="text-2xl font-bold text-[#013765]">{{ modulos_concluidos | default(0) }}</div>
-                <div class="text-sm text-[#013765] text-opacity-80">Concluídos</div>
-              </div>
+            <div class="space-y-3">
+              <a href="{{ url_for('curso_home') }}" class="block w-full bg-[#bd5ecf] hover:bg-[#013765] text-white font-semibold py-2.5 md:py-3 px-4 rounded-lg text-center transition duration-300 transform hover:scale-105 text-sm md:text-base">
+                <i class="fas fa-play-circle mr-2"></i>Continuar Estudando
+              </a>
+              <button class="block w-full bg-[#6cc4ea] hover:bg-[#013765] text-white font-semibold py-2.5 md:py-3 px-4 rounded-lg text-center transition duration-300 transform hover:scale-105 text-sm md:text-base">
+                <i class="fas fa-download mr-2"></i>Baixar Certificado
+              </button>
+              <a href="{{ url_for('perfil') }}" class="block w-full bg-[#98e6d6] hover:bg-[#013765] text-[#013765] hover:text-white font-semibold py-2.5 md:py-3 px-4 rounded-lg text-center transition duration-300 transform hover:scale-105 text-sm md:text-base border border-[#98e6d6]">
+                <i class="fas fa-sync-alt mr-2"></i>Atualizar Progresso
+              </a>
             </div>
           </div>
         </div>
 
         <!-- Atividade Recente -->
-        <div class="space-y-6">
+        <div class="space-y-4 md:space-y-6">
           <div
-            class="bg-white p-6 rounded-2xl shadow-lg h-fit transition duration-300 hover:shadow-xl border border-[#bd5ecf]"
+            class="bg-white p-4 md:p-6 rounded-2xl shadow-lg h-fit transition duration-300 hover:shadow-xl border border-[#bd5ecf]"
           >
             <div
-              class="flex justify-between items-center mb-4 pb-3 border-b border-[#bd5ecf]"
+              class="flex justify-between items-center mb-3 md:mb-4 pb-2 md:pb-3 border-b border-[#bd5ecf]"
             >
-              <h3 class="text-xl font-semibold text-[#013765] flex items-center">
-                <i class="fas fa-history mr-3 text-[#bd5ecf] bg-[#bd5ecf] bg-opacity-10 p-2 rounded-lg"></i> 
+              <h3 class="text-lg md:text-xl font-semibold text-[#013765] flex items-center">
+                <i class="fas fa-history mr-2 md:mr-3 text-[#bd5ecf] bg-[#bd5ecf] bg-opacity-10 p-1.5 md:p-2 rounded-lg text-sm md:text-base"></i> 
                 Atividade Recente
               </h3>
             </div>
@@ -196,12 +197,12 @@
               {% for atividade in atividades_recente %}
               <div class="flex items-center py-3 group hover:bg-[#edceff] hover:bg-opacity-30 rounded-lg px-2 transition duration-300">
                 <div
-                  class="w-10 h-10 rounded-full bg-[#98e6d6] bg-opacity-20 text-[#98e6d6] flex items-center justify-center mr-4 border border-[#98e6d6] border-opacity-30"
+                  class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-[#98e6d6] bg-opacity-20 text-[#98e6d6] flex items-center justify-center mr-3 md:mr-4 border border-[#98e6d6] border-opacity-30"
                 >
-                  <i class="fas fa-book"></i>
+                  <i class="fas fa-book text-sm md:text-base"></i>
                 </div>
                 <div class="flex-1">
-                  <div class="font-medium text-[#013765]">
+                  <div class="font-medium text-[#013765] text-sm md:text-base">
                     Módulo Concluído: {{ atividade.nome }}
                   </div>
                   <div class="text-xs text-[#013765] text-opacity-70">
@@ -217,33 +218,49 @@
               </div>
               {% else %}
               <div class="p-4 text-center text-[#013765] text-opacity-70 bg-[#edceff] bg-opacity-30 rounded-lg">
-                <i class="fas fa-inbox text-2xl mb-2 text-[#bd5ecf]"></i>
-                <div>Nenhuma atividade recente encontrada.</div>
-                <div class="text-sm mt-1">Comece um módulo para ver seu progresso aqui!</div>
+                <i class="fas fa-inbox text-xl md:text-2xl mb-2 text-[#bd5ecf]"></i>
+                <div class="text-sm md:text-base">Nenhuma atividade recente encontrada.</div>
+                <div class="text-xs md:text-sm mt-1">Comece um módulo para ver seu progresso aqui!</div>
               </div>
               {% endfor %}
             </div>
           </div>
 
-          <!-- Ações Rápidas -->
+          <!-- Estatísticas Rápidas -->
           <div
-            class="bg-white p-6 rounded-2xl shadow-lg h-fit transition duration-300 hover:shadow-xl border border-[#98e6d6]"
+            class="bg-white p-4 md:p-6 rounded-2xl shadow-lg h-fit transition duration-300 hover:shadow-xl border border-[#6cc4ea]"
           >
-            <h3 class="text-xl font-semibold text-[#013765] flex items-center mb-4">
-              <i class="fas fa-bolt mr-3 text-[#98e6d6] bg-[#98e6d6] bg-opacity-10 p-2 rounded-lg"></i>
-              Ações Rápidas
+            <h3 class="text-lg md:text-xl font-semibold text-[#013765] flex items-center mb-3 md:mb-4">
+              <i class="fas fa-chart-bar mr-2 md:mr-3 text-[#6cc4ea] bg-[#6cc4ea] bg-opacity-10 p-1.5 md:p-2 rounded-lg text-sm md:text-base"></i>
+              Estatísticas
             </h3>
-            <div class="space-y-3">
-              <a href="{{ url_for('curso_home') }}" class="block w-full bg-[#bd5ecf] hover:bg-[#013765] text-white font-semibold py-3 px-4 rounded-lg text-center transition duration-300 transform hover:scale-105">
-                <i class="fas fa-play-circle mr-2"></i>Continuar Estudando
-              </a>
-              <button class="block w-full bg-[#6cc4ea] hover:bg-[#013765] text-white font-semibold py-3 px-4 rounded-lg text-center transition duration-300 transform hover:scale-105">
-                <i class="fas fa-download mr-2"></i>Baixar Certificado
-              </button>
+            <div class="grid grid-cols-2 gap-3 md:gap-4">
+              <div class="text-center p-3 bg-[#6cc4ea] bg-opacity-10 rounded-xl">
+                <div class="text-xl md:text-2xl font-bold text-[#013765]">{{ total_modulos | default(0) }}</div>
+                <div class="text-xs md:text-sm text-[#013765] text-opacity-80">Total Módulos</div>
+              </div>
+              <div class="text-center p-3 bg-[#bd5ecf] bg-opacity-10 rounded-xl">
+                <div class="text-xl md:text-2xl font-bold text-[#013765]">{{ modulos_concluidos | default(0) }}</div>
+                <div class="text-xs md:text-sm text-[#013765] text-opacity-80">Concluídos</div>
+              </div>
+              <div class="text-center p-3 bg-[#98e6d6] bg-opacity-10 rounded-xl">
+                <div class="text-xl md:text-2xl font-bold text-[#013765]">{{ tempo_estudo | default(0) }}h</div>
+                <div class="text-xs md:text-sm text-[#013765] text-opacity-80">Tempo de Estudo</div>
+              </div>
+              <div class="text-center p-3 bg-[#edceff] bg-opacity-50 rounded-xl">
+                <div class="text-xl md:text-2xl font-bold text-[#013765]">{{ progresso_curso | default(0) }}%</div>
+                <div class="text-xs md:text-sm text-[#013765] text-opacity-80">Progresso</div>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </main>
+
+    <footer class="mt-8 md:mt-12 py-4 md:py-6 bg-[#013765] text-white">
+      <div class="max-w-5xl mx-auto px-3 sm:px-4 text-center text-xs md:text-sm">
+        <p>2025 Level Up! &copy; Todos os direitos reservados.</p>
+      </div>
+    </footer>
   </body>
 </html>
