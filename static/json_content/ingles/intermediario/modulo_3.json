@@ -1,0 +1,118 @@
+{
+    "titulo": "Módulo 3: Present Simple",
+    "youtube_url": "https://youtu.be/a0naQW3g7AY?si=IQI5D4IjdIKkt9UI",
+    "atividades": [
+        {
+            "id": "q1",
+            "pergunta": "Qual a estrutura principal de uma frase afirmativa no Present Simple?",
+            "opcoes": {
+                "A": "Sujeito + verbo base.",
+                "B": "Verbo base + sujeito.",
+                "C": "Sujeito + (verbo to be).",
+                "D": "(Verbo to be) + sujeito."
+            }
+        },
+        {
+            "id": "q2",
+            "pergunta": "Qual a estrutura principal de uma frase negativa no Present Simple?",
+            "opcoes": {
+                "A": "Sujeito + verbo base + do not.",
+                "B": "Verbo base + sujeito + do not.",
+                "C": "Sujeito + do not + verbo base.",
+                "D": "Do not + sujeito + verbo base."
+            }
+        },
+        {
+            "id": "q3",
+            "pergunta": "Qual alternativa a seguir apresenta uma frase afirmativa no Present Simple?",
+            "opcoes": {
+                "A": "I drunk coffee yesterday.",
+                "B": "I check my emails once a week.",
+                "C": "He traveled to France last vacations.",
+                "D": "Are you ready to go?"
+            }
+        },
+        {
+            "id": "q4",
+            "pergunta": "Complete a frase: “She __ up”.",
+            "opcoes": {
+                "A": "Woke.",
+                "B": "Waked.",
+                "C": "Wake.",
+                "D": "Wakes."
+            }
+        },
+        {
+            "id": "q5",
+            "pergunta": "Complete a frase: “She __ to school every day”.",
+            "opcoes": {
+                "A": "go",
+                "B": "goes",
+                "C": "going",
+                "D": "gone"
+            }
+        },
+        {
+            "id": "q6",
+            "pergunta": "Qual das alternativas a seguir é a correta?",
+            "opcoes": {
+                "A": "She is reading a book.",
+                "B": "She read a book yesterday.",
+                "C": "She reads a book every day.",
+                "D": "She will read a book tomorrow."
+            }
+        },
+        {
+            "id": "q7",
+            "pergunta": "Qual alternativa a seguir não está no Present Simple?",
+            "opcoes": {
+                "A": "He goes to work by car.",
+                "B": "They like pizza.",
+                "C": "She don’t play tennis.",
+                "D": "I study English."
+            }
+        },
+        {
+            "id": "q8",
+            "pergunta": "No Present Simple, qual verbo é escrito corretamente para he/she/it?",
+            "opcoes": {
+                "A": "Verbo + s/es.",
+                "B": "Verbo + ing.",
+                "C": "Verbo to be + s/es.",
+                "D": "Verbo to be + ing."
+            }
+        },
+        {
+            "id": "q9",
+            "pergunta": "Qual a estrutura de uma frase interrogativa no Present Simple?",
+            "opcoes": {
+                "A": "(Verbo to be) + sujeito + complemento.",
+                "B": "Do/does + sujeito + verbo base + complemento.",
+                "C": "Do/does + verbo base + sujeito.",
+                "D": "(Verbo to be) + sujeito + verbo base + complemente"
+            }
+        },
+        {
+            "id": "q10",
+            "pergunta": "Complete a frase: “I’m sure you sister __ you”.",
+            "opcoes": {
+                "A": "Miss.",
+                "B": "Missing.",
+                "C": "Missed.",
+                "D": "Misses."
+            }
+        }
+    ],
+    "respostas_corretas": {
+        "q1": "A",
+        "q2": "C",
+        "q3": "B",
+        "q4": "D",
+        "q5": "B",
+        "q6": "C",
+        "q7": "C",
+        "q8": "A",
+        "q9": "B",
+        "q10": "D"
+    }
+}

@@ -1,0 +1,30 @@
+{
+    "titulo": "Espanhol - Módulo 2: Verbos Regulares",
+    "video_url": "videos/espanhol/modulo2_verbos_reg.mp4",
+    "atividades": [
+        {
+            "id": "e3",
+            "pergunta": "Qual a conjugação correta de 'hablar' (falar) para 'Eu' (yo)?",
+            "opcoes": {
+                "A": "Yo hablas",
+                "B": "Yo hablo",
+                "C": "Yo hable",
+                "D": "Yo habar"
+            }
+        },
+        {
+            "id": "e4",
+            "pergunta": "Qual a terminação para verbos regulares no presente para 'Nós' (nosotros)?",
+            "opcoes": {
+                "A": "-an",
+                "B": "-es",
+                "C": "-amos",
+                "D": "-o"
+            }
+        }
+    ],
+    "respostas_corretas": {
+        "e3": "B",
+        "e4": "C"
+    }
+}

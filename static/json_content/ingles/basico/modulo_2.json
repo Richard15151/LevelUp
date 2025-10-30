@@ -1,0 +1,118 @@
+{
+    "titulo": "Módulo 2: Present continuous",
+    "youtube_url": "https://youtu.be/buPB_TktAcE?si=oTZaIh8KmRaROWSs",
+    "atividades": [
+        {
+            "id": "q1",
+            "pergunta": "Qual a estrutura mais comum de um verbo no present continuous?",
+            "opcoes": {
+                "A": "Sujeito, (verbo to be), verbo + ing.",
+                "B": "Sujeito, (verbo to be), verbo + ed.",
+                "C": "Sujeito, verbo, (verbo to be) + ing.",
+                "D": "Sujeito, verbo, (verbo to be) + ed."
+            }
+        },
+        {
+            "id": "q2",
+            "pergunta": "Qual dos verbos a seguir está no present continuous?",
+            "opcoes": {
+                "A": "Falled.",
+                "B": "Draw.",
+                "C": "Running.",
+                "D": "See."
+            }
+        },
+        {
+            "id": "q3",
+            "pergunta": "Qual dos verbos a seguir NÃO está no present continuous?",
+            "opcoes": {
+                "A": "Jumping.",
+                "B": "Walking.",
+                "C": "Talking.",
+                "D": "Speak."
+            }
+        },
+        {
+            "id": "q4",
+            "pergunta": "Para qual fim é utilizado o present continuous?",
+            "opcoes": {
+                "A": "Para indicar algo que está no passado.",
+                "B": "Para indicar o que está acontecendo.",
+                "C": "Para indicar o que vai acontecer.",
+                "D": "Para indicar o que poderia ter acontecido."
+            }
+        },
+        {
+            "id": "q5",
+            "pergunta": "Qual das alternativas apresenta uma frase na negativa, e outra na afirmativa, respectivamente, ambas no present continuous?",
+            "opcoes": {
+                "A": "I’m not felling safe here. I’m going!",
+                "B": "You’re right. I walked a lot.",
+                "C": "She’s not talking for real. I think she’s a lier.",
+                "D": "I’m not believing it! It is so cute!"
+            }
+        },
+        {
+            "id": "q6",
+            "pergunta": "Como é a estrutura de uma frase na negativa no present continuous?",
+            "opcoes": {
+                "A": "Sujeito, verbo+not, (verbo to be)+ing.",
+                "B": "(Verbo to be)+not, sujeito, verbo+ing.",
+                "C": "Sujeito, (verbo to be)+not, verbo+ing.",
+                "D": "Verbo+not, sujeito, (verbo to be)+ing."
+            }
+        },
+        {
+            "id": "q7",
+            "pergunta": "Como é a estrutura de uma frase interrogativa no present continuous?",
+            "opcoes": {
+                "A": "Verbo, sujeito, (verbo to be)+ing.",
+                "B": "Sujeito, verbo, (verbo to be)+ing.",
+                "C": "(Verbo to be), verbo+ing, sujeito.",
+                "D": "(Verbo to be), sujeito, verbo+ing."
+            }
+        },
+        {
+            "id": "q8",
+            "pergunta": "Complete a frase: “I am not __ with her!”",
+            "opcoes": {
+                "A": "Talked.",
+                "B": "Talking.",
+                "C": "Speak.",
+                "D": "Speaked."
+            }
+        },
+        {
+            "id": "q9",
+            "pergunta": "Complete a frase: “My mother __ now.”",
+            "opcoes": {
+                "A": "Are working.",
+                "B": "Is worked.",
+                "C": "Is working.",
+                "D": "Are worked."
+            }
+        },
+        {
+            "id": "q10",
+            "pergunta": "Complete a frase: “__ going now?”",
+            "opcoes": {
+                "A": "Is you.",
+                "B": "Are she.",
+                "C": "Is I.",
+                "D": "Are you."
+            }
+        }
+    ],
+    "respostas_corretas": {
+        "q1": "A",
+        "q2": "C",
+        "q3": "D",
+        "q4": "B",
+        "q5": "A",
+        "q6": "C",
+        "q7": "D",
+        "q8": "B",
+        "q9": "C",
+        "q10": "D"
+    }
+}

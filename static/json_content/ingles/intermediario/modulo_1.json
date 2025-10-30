@@ -1,0 +1,118 @@
+{
+    "titulo": "Módulo 1: Verbo to be",
+    "youtube_url": "https://youtu.be/bSeZlT7Og8I?si=yCBPInQEkCT69OeX",
+    "atividades": [
+        {
+            "id": "q1",
+            "pergunta": "Quais dos sujeitos a seguir que estão no singular?",
+            "opcoes": {
+                "A": "I, you, he.",
+                "B": "You, he, she.",
+                "C": "I, you, they.",
+                "D": "He, she, we."
+            }
+        },
+        {
+            "id": "q2",
+            "pergunta": "Quais verbos a seguir correspondem corretamente aos sujeitos “I...”, “You...” e “he...”?",
+            "opcoes": {
+                "A": "Am, is, are.",
+                "B": "Are, is, am.",
+                "C": "Am, are, is.",
+                "D": "Is, am, are."
+            }
+        },
+        {
+            "id": "q3",
+            "pergunta": "Qual frase está correta?",
+            "opcoes": {
+                "A": "I aren’t good today.",
+                "B": "You is so nice!",
+                "C": "They is very friendly.",
+                "D": "I am very happy!"
+            }
+        },
+        {
+            "id": "q4",
+            "pergunta": "Qual verbo to be é usado corretamente para os sujeitos “You, he, they”?",
+            "opcoes": {
+                "A": "Am, is, is.",
+                "B": "Are, is, am.",
+                "C": "Is, are, am.",
+                "D": "Are, is, are."
+            }
+        },
+        {
+            "id": "q5",
+            "pergunta": "Qual alternativa apresenta corretamente o modo informal da junção de “I, you, he” mais seus respectivos verbos to be?",
+            "opcoes": {
+                "A": "I’m, your’s, he’re.",
+                "B": "I’m, you’re, he’s.",
+                "C": "I’s, you’re, he’s.",
+                "D": "I’re, you’s, he’s."
+            }
+        },
+        {
+            "id": "q6",
+            "pergunta": "Qual alternativa apresenta corretamente todos os sujeitos com seus respectivos verbos to be?",
+            "opcoes": {
+                "A": "I am, you is, he is, she is, it are, they are, we is.",
+                "B": "I are, you is, he are, she are, it is, they is, we are.",
+                "C": "I am, you are, he is, she is, it is, they are, we are.",
+                "D": "I am, you is, he are, she are, it is, they are, we is."
+            }
+        },
+        {
+            "id": "q7",
+            "pergunta": "Qual das alternativas apresenta corretamente uma frase na negativa, e uma na afirmativa, respectivamente?",
+            "opcoes": {
+                "A": "I am not happy anymore. I’m felling sad.",
+                "B": "I am hungry! I need some food.",
+                "C": "She is crying. I am sad for her.",
+                "D": "I’m not with time. I’m leaving now."
+            }
+        },
+        {
+            "id": "q8",
+            "pergunta": "Complete as frases: “Hi! My name __ Maria. How __ you?”",
+            "opcoes": {
+                "A": "Am, are.",
+                "B": "Are, is.",
+                "C": "Is, are.",
+                "D": "Am, is."
+            }
+        },
+        {
+            "id": "q9",
+            "pergunta": "Complete a frase: “He __ a teatcher”.",
+            "opcoes": {
+                "A": "Am.",
+                "B": "Are.",
+                "C": "Is.",
+                "D": "Be."
+            }
+        },
+        {
+            "id": "q10",
+            "pergunta": "Complete as frases: “I __ enchanted to meet you! What __ your name?”",
+            "opcoes": {
+                "A": "Am, are.",
+                "B": "Is, is.",
+                "C": "Is, are.",
+                "D": "Am, is."
+            }
+        }
+    ],
+    "respostas_corretas": {
+        "q1": "B",
+        "q2": "C",
+        "q3": "D",
+        "q4": "D",
+        "q5": "B",
+        "q6": "C",
+        "q7": "A",
+        "q8": "C",
+        "q9": "C",
+        "q10": "D"
+    }
+}

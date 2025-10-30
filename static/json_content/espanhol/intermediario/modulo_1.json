@@ -1,0 +1,30 @@
+{
+    "titulo": "Espanhol - Módulo 1: Primeiras Palavras",
+    "video_url": "videos/espanhol/modulo1_introducao.mp4",
+    "atividades": [
+        {
+            "id": "e1",
+            "pergunta": "Qual a tradução de 'gracias'?",
+            "opcoes": {
+                "A": "Por favor",
+                "B": "De nada",
+                "C": "Obrigado",
+                "D": "Com licença"
+            }
+        },
+        {
+            "id": "e2",
+            "pergunta": "Qual destas palavras significa 'água'?",
+            "opcoes": {
+                "A": "Vino",
+                "B": "Cerveza",
+                "C": "Agua",
+                "D": "Leche"
+            }
+        }
+    ],
+    "respostas_corretas": {
+        "e1": "C",
+        "e2": "C"
+    }
+}

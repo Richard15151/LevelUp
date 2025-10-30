@@ -6,7 +6,7 @@ try:
 except RuntimeError:
     pass
 
-from flask import Flask, render_template, request, redirect, url_for, session, current_app
+from flask import Flask, render_template, request, redirect, url_for, session, current_app, flash
 from flask_socketio import SocketIO, emit, disconnect
 from flask_mysqldb import MySQL
 # IMPORTAÇÕES DO CHATBOT
@@ -17,6 +17,13 @@ from uuid import uuid4
 import os
 import hashlib
 import json
+import re
+
+NIVEIS_ORDEM = {
+    'Básico': 'Intermediário',
+    'Intermediário': 'Avançado',
+    'Avançado': 'Concluído'
+}
 
 # Carrega variáveis de ambiente (GENAI_KEY)
 load_dotenv()
@@ -244,11 +251,10 @@ def handle_disconnect():
 # FUNÇÕES E ROTAS EXISTENTES DO SEU APP.PY (NÃO ALTERADAS)
 # *******************************************************************
 
-def carregar_conteudo_json(curso, ordem):
-    # ... (Sua função carregar_conteudo_json)
+def carregar_conteudo_json(curso, ordem, nivel):
     """
-    Carrega o conteúdo do módulo a partir de um arquivo JSON.
-    Assumimos que o arquivo está em: ../static/json_content/{curso}/modulo_{ordem}.json
+    Carrega o conteúdo do módulo a partir de um arquivo JSON, incluindo o nível.
+    Caminho assumido: ../static/json_content/{curso}/{nivel}/modulo_{ordem}.json
     """
     try:
         # Pega o diretório base do projeto (onde app.py está)
@@ -260,14 +266,42 @@ def carregar_conteudo_json(curso, ordem):
                                        '..', 
                                        'static', 
                                        'json_content', 
-                                       curso_limpo, 
+                                       curso_limpo,
+                                       nivel.lower(),
                                        f'modulo_{ordem}.json')
         
+        # DEBUG (é bom manter isso por enquanto):
         print(f"\n[DEBUG JSON] Tentando abrir: {caminho_arquivo}\n")
             
         with open(caminho_arquivo, 'r', encoding='utf-8') as f:
             conteudo = json.load(f)
+            
+            # -------------------------------------------------------------------
+            # ✅ NOVO CÓDIGO: EXTRAÇÃO E CRIAÇÃO DA URL DE INCORPORAÇÃO (EMBED)
+            # -------------------------------------------------------------------
+            youtube_url = conteudo.get('youtube_url')
+            
+            if youtube_url:
+                # Usa regex para encontrar o ID do vídeo, seja em youtu.be/ID ou watch?v=ID
+                # O (?:...) cria um grupo de não-captura para simplificar
+                video_id_match = re.search(r'(?:youtu\.be/|v=)([\w-]+)', youtube_url)
+                
+                if video_id_match:
+                    video_id = video_id_match.group(1)
+                    # Cria a URL de incorporação (embed) que o iframe precisa
+                    # ?rel=0 evita que vídeos relacionados de outros canais sejam exibidos ao final.
+                    conteudo['embed_url'] = f'https://www.youtube.com/embed/{video_id}?rel=0'
+                else:
+                    # Se não conseguir extrair o ID
+                    conteudo['embed_url'] = None
+                    print(f"[ERRO YOUTUBE] URL do YouTube inválida no JSON: {youtube_url}")
+            else:
+                # Se a chave youtube_url não estiver no JSON
+                conteudo['embed_url'] = None
+            # -------------------------------------------------------------------
+
             return conteudo
+            
     except FileNotFoundError:
         print(f"[ERRO JSON] Arquivo não encontrado no caminho: {caminho_arquivo}")
         return None
@@ -299,7 +333,7 @@ def login():
         senha = request.form['senha']
         
         cur = mysql.connection.cursor()
-        cur.execute("SELECT aluno_id, nome, senha_hash, curso_acesso FROM aluno WHERE email = %s", [email])
+        cur.execute("SELECT aluno_id, nome, senha_hash, curso_acesso, nivel_curso FROM aluno WHERE email = %s", [email])
         aluno = cur.fetchone()
         cur.close()
 
@@ -311,13 +345,18 @@ def login():
                 session['aluno_id'] = aluno['aluno_id']
                 session['nome'] = aluno['nome']
                 session['curso_acesso'] = aluno['curso_acesso']
+                session['nivel_curso'] = aluno['nivel_curso']
                 
+                flash('Login realizado com sucesso!', 'success')
                 return redirect(url_for('curso_home'))
             else:
-                return render_template('login.html', erro='Email ou senha incorretos.')
+                # Senha incorreta
+                flash('Email ou senha incorretos.', 'danger')
+                return redirect(url_for('login'))
         else:
-            return render_template('login.html', erro='Email ou senha incorretos.')
-    
+            # Usuário não encontrado
+            flash('Email ou senha incorretos.', 'danger')
+            return redirect(url_for('login'))
     return render_template('login.html')
 
 @app.route('/cadastro', methods=['GET', 'POST'])
@@ -336,8 +375,10 @@ def cadastro():
 
         senha_hash = hashlib.sha256(senha.encode()).hexdigest()
 
-        cur.execute("INSERT INTO aluno (nome, email, senha_hash, curso_acesso) VALUES (%s, %s, %s, %s)", 
-                    (nome, email, senha_hash, curso_acesso))
+        cur.execute("""
+            INSERT INTO aluno (nome, email, senha_hash, curso_acesso, nivel_curso) 
+            VALUES (%s, %s, %s, %s, %s)
+        """, (nome, email, senha_hash, 'Inglês', 'Básico'))
         
         mysql.connection.commit()
         cur.close()
@@ -356,10 +397,12 @@ def logout():
 def curso_home():
     aluno_id = session['aluno_id']
     curso_acesso = session['curso_acesso']
+    nivel_atual = session.get('nivel_curso')
     
     cur = mysql.connection.cursor()
     
-    cur.execute("SELECT modulo_id, nome, ordem FROM modulo WHERE curso_acesso = %s ORDER BY ordem ASC", [curso_acesso])
+    cur.execute("SELECT modulo_id, nome, ordem FROM modulo WHERE curso_acesso = %s AND nivel = %s ORDER BY ordem ASC", 
+                [curso_acesso, nivel_atual])
     modulos = cur.fetchall()
     
     cur.execute("SELECT modulo_id, status_modulo, nota_final FROM desempenho_modulo WHERE aluno_id = %s", [aluno_id])
@@ -396,14 +439,19 @@ def curso_home():
     # Renderiza a página principal do curso
     return render_template('curso_home.html', 
                             curso=curso_acesso,
+                            nivel=nivel_atual,
                             modulos=modulos_com_progresso,
                             progresso_curso=progresso_curso_porcentagem)
 
 @app.route('/curso/<string:curso>/modulo/<int:ordem>', methods=['GET'])
 @login_required
 def modulo_page(curso, ordem):
+    @app.route('/curso/<string:curso>/modulo/<int:ordem>', methods=['GET'])
+@login_required
+def modulo_page(curso, ordem):
     aluno_id = session['aluno_id']
     curso_acesso = session['curso_acesso']
+    nivel_atual = session.get('nivel_curso')
     
     curso_limpo = curso.lower().replace('ê', 'e').replace('ã', 'a')
     curso_session_limpo = curso_acesso.lower().replace('ê', 'e').replace('ã', 'a')
@@ -411,54 +459,93 @@ def modulo_page(curso, ordem):
     if curso_limpo != curso_session_limpo:
         return "Acesso negado ao curso.", 403
 
+    # 🔴 CORREÇÃO 1: Inicialize o cursor AQUI, para que ele esteja no escopo
+    cur = mysql.connection.cursor()
+    
+    # -----------------------------------------------------
+    # Lógica de Validação de Acesso (Módulos Sequenciais)
+    # -----------------------------------------------------
+
     if ordem > 1:
         modulo_anterior_ordem = ordem - 1
         
-        cur = mysql.connection.cursor()
-        cur.execute("SELECT modulo_id FROM modulo WHERE curso_acesso = %s AND ordem = %s", 
-                    [curso_acesso, modulo_anterior_ordem])
+        # O USO DO 'cur' começa aqui
+        cur.execute("SELECT modulo_id FROM modulo WHERE curso_acesso = %s AND nivel = %s AND ordem = %s", 
+                     [curso_acesso, nivel_atual, modulo_anterior_ordem])
         modulo_anterior = cur.fetchone()
         
         if modulo_anterior:
-            cur.execute("SELECT status_modulo FROM desempenho_modulo WHERE aluno_id = %s AND modulo_id = %s", 
-                        [aluno_id, modulo_anterior['modulo_id']])
+            cur.execute("SELECT status_modulo FROM desempenho_modulo WHERE aluno_id = %s AND modulo_id = %s AND nivel_modulo = %s", 
+                         [aluno_id, modulo_anterior['modulo_id'], nivel_atual])
             progresso_anterior = cur.fetchone()
-            cur.close()
             
             if not progresso_anterior or progresso_anterior['status_modulo'] != 'Concluído':
+                flash("Você precisa concluir o módulo anterior para acessar este.", 'warning')
+                cur.close() # Pode fechar o cursor aqui
                 return redirect(url_for('curso_home'))
         else:
-            cur.close()
+            cur.close() # Pode fechar o cursor aqui
             return "Módulo anterior não encontrado.", 404
 
-    conteudo = carregar_conteudo_json(curso_limpo, ordem)
-    if not conteudo:
-        return "Conteúdo do módulo não encontrado ou inválido.", 404
+    elif ordem == 1 and nivel_atual != 'Básico':
+        
+        # ... (O restante da sua lógica de validação de NÍVEL ANTERIOR) ...
+        # (Todos esses blocos internos usam cur, o que está correto)
+        
+        # Certifique-se de fechar o cursor antes de *qualquer* return neste bloco:
+        # Ex:
+        # if not progresso_nivel_anterior or progresso_nivel_anterior['status_modulo'] != 'Concluído':
+        #     flash(f"Você precisa concluir o Nível {nivel_anterior} para iniciar o Nível {nivel_atual}.", 'warning')
+        #     cur.close()
+        #     return redirect(url_for('curso_home'))
+        pass # Se não precisar de redirecionamento, continua.
+
+    # 🔴 CORREÇÃO 2: A linha `cur.close()` DEVE ser removida ou movida para um local seguro.
+    # Como você já tem `cur.close()` dentro dos `return` condicionais, 
+    # e não está em um `try...finally`, vamos movê-lo para o final.
+
+    # -----------------------------------------------------
+    # Carregamento de Conteúdo Final (Se todas as validações passarem)
+    # -----------------------------------------------------
     
+    # ... (Seu código de carregar conteúdo e renderizar) ...
+
+    # 🔴 CORREÇÃO 3: Feche o cursor antes do `return render_template`
+    cur.close() 
+
     return render_template('modulo_page.html', 
-                            curso=curso_limpo, 
-                            ordem=ordem, 
-                            conteudo=conteudo)
+                             curso=curso_limpo, 
+                             ordem=ordem, 
+                             nivel=nivel_atual, 
+                             modulo=conteudo)
 
 @app.route('/curso/<string:curso>/modulo/<int:ordem>', methods=['POST'])
 @login_required
 def enviar_atividade(curso, ordem):
     aluno_id = session['aluno_id']
     curso_acesso = session['curso_acesso']
+    nivel_atual = session.get('nivel_curso') # 🔴 NOVO: Pega o nível atual do aluno
+    
+    # 🔴 VERIFICAÇÃO DE NÍVEL:
+    if not nivel_atual:
+        flash("Erro: O seu nível de curso não foi encontrado. Por favor, refaça o login.", 'danger')
+        return redirect(url_for('login'))
+        
     NOTA_MINIMA_ACERTOS = 7 
     
     curso_limpo = curso.lower().replace('ê', 'e').replace('ã', 'a')
     
-    conteudo = carregar_conteudo_json(curso_limpo, ordem)
+    # 🔴 MUDANÇA: Passa o nível para a função JSON
+    conteudo = carregar_conteudo_json(curso_limpo, ordem, nivel_atual) 
     if not conteudo:
         return "Erro: Conteúdo do módulo indisponível.", 404
 
+    # --- Lógica de Avaliação (Inalterada) ---
     respostas_corretas = conteudo.get('respostas_corretas', {})
     respostas_aluno = request.form
-    
     total_perguntas = len(respostas_corretas)
     acertos = 0
-    
+    # ... (Seu loop de correção) ...
     for id_pergunta, resposta_correta in respostas_corretas.items():
         resposta_aluno = respostas_aluno.get(f'pergunta_{id_pergunta}')
         if resposta_aluno and resposta_aluno.upper() == resposta_correta.upper():
@@ -466,58 +553,113 @@ def enviar_atividade(curso, ordem):
             
     erros = total_perguntas - acertos
     nota_final = (acertos / total_perguntas) * 100 if total_perguntas > 0 else 0
-    
     aprovado = acertos >= NOTA_MINIMA_ACERTOS
-    # Mapeamento para o ENUM do DB (Concluído/Em Andamento)
     novo_status = 'Concluído' if aprovado else 'Em Andamento' 
     
     cur = mysql.connection.cursor()
-    cur.execute("SELECT modulo_id FROM modulo WHERE curso_acesso = %s AND ordem = %s", [curso_acesso, ordem])
+
+    # 🔴 MUDANÇA: Buscar modulo_id com filtro de nível
+    cur.execute("SELECT modulo_id FROM modulo WHERE curso_acesso = %s AND nivel = %s AND ordem = %s", 
+                [curso_acesso, nivel_atual, ordem])
     modulo_info = cur.fetchone()
     
     if not modulo_info:
         cur.close()
-        return "Módulo não encontrado no banco de dados.", 404
+        return "Módulo não encontrado no banco de dados para o seu nível atual.", 404
 
     modulo_id = modulo_info['modulo_id']
     
+    # 🔴 MUDANÇA: Inserir 'nivel_modulo' no desempenho
     sql_desempenho = """
-        INSERT INTO desempenho_modulo (aluno_id, modulo_id, status_modulo, nota_final, data_conclusao)
-        VALUES (%s, %s, %s, %s, NOW())
+        INSERT INTO desempenho_modulo (aluno_id, modulo_id, nivel_modulo, status_modulo, nota_final, data_conclusao)
+        VALUES (%s, %s, %s, %s, %s, NOW())
         ON DUPLICATE KEY UPDATE 
             status_modulo = VALUES(status_modulo), 
             nota_final = VALUES(nota_final),
             data_conclusao = NOW()
     """
-    cur.execute(sql_desempenho, (aluno_id, modulo_id, novo_status, nota_final))
+    cur.execute(sql_desempenho, (aluno_id, modulo_id, nivel_atual, novo_status, nota_final)) # 🔴 NOVO: nivel_atual aqui
 
+    
+    # -----------------------------------------------------
+    # 🔴 LÓGICA DE AVANÇO DE NÍVEL OU DESBLOQUEIO SEQUENCIAL
+    # -----------------------------------------------------
+    should_redirect = False # Flag para forçar o redirecionamento
+    
     if aprovado:
         proxima_ordem = ordem + 1
-        cur.execute("SELECT modulo_id FROM modulo WHERE curso_acesso = %s AND ordem = %s", [curso_acesso, proxima_ordem])
-        proximo_modulo = cur.fetchone()
         
-        if proximo_modulo:
-            proximo_modulo_id = proximo_modulo['modulo_id']
+        # 1. Tenta encontrar o próximo módulo DENTRO DO NÍVEL ATUAL
+        cur.execute("SELECT modulo_id FROM modulo WHERE curso_acesso = %s AND nivel = %s AND ordem = %s", 
+                    [curso_acesso, nivel_atual, proxima_ordem])
+        proximo_modulo_mesmo_nivel = cur.fetchone()
+
+        if proximo_modulo_mesmo_nivel:
+            # Desbloqueia o próximo módulo do MESMO NÍVEL
+            proximo_modulo_id = proximo_modulo_mesmo_nivel['modulo_id']
             
-            # Usando 'Em Andamento' para o desbloqueio, conforme ajustado.
+            # 🔴 MUDANÇA: Inserir o nivel_modulo ao desbloquear
             sql_desbloqueio = """
-                INSERT INTO desempenho_modulo (aluno_id, modulo_id, status_modulo, nota_final, data_conclusao)
-                VALUES (%s, %s, 'Em Andamento', 0.00, NULL)
-                ON DUPLICATE KEY UPDATE 
-                    aluno_id = aluno_id
+                INSERT INTO desempenho_modulo (aluno_id, modulo_id, status_modulo, nivel_modulo)
+                VALUES (%s, %s, 'Em Andamento', %s)
+                ON DUPLICATE KEY UPDATE aluno_id = aluno_id
             """
-            cur.execute(sql_desbloqueio, (aluno_id, proximo_modulo_id))
+            cur.execute(sql_desbloqueio, (aluno_id, proximo_modulo_id, nivel_atual))
+            
+        else:
+            # 2. Não há próximo módulo no nível. Tenta avançar para o PRÓXIMO NÍVEL.
+            proximo_nivel = NIVEIS_ORDEM.get(nivel_atual)
+            
+            if proximo_nivel == 'Concluído':
+                # FIM DO CURSO
+                flash(f'Parabéns! Você concluiu o curso de {curso_acesso}!', 'success')
+            
+            elif proximo_nivel:
+                # TRANSIÇÃO DE NÍVEL
+                
+                # a. Atualiza o banco de dados do aluno
+                cur.execute("UPDATE aluno SET nivel_curso = %s WHERE aluno_id = %s", 
+                            [proximo_nivel, aluno_id])
+                
+                # b. Desbloqueia o primeiro módulo (ordem 1) do NOVO NÍVEL
+                cur.execute("SELECT modulo_id FROM modulo WHERE curso_acesso = %s AND nivel = %s AND ordem = 1", 
+                            [curso_acesso, proximo_nivel])
+                primeiro_modulo_proximo_nivel = cur.fetchone()
+                
+                if primeiro_modulo_proximo_nivel:
+                    primeiro_modulo_id = primeiro_modulo_proximo_nivel['modulo_id']
+                    
+                    # 🔴 MUDANÇA: Desbloqueio usando o NOVO NÍVEL
+                    sql_desbloqueio_novo_nivel = """
+                        INSERT INTO desempenho_modulo (aluno_id, modulo_id, status_modulo, nivel_modulo)
+                        VALUES (%s, %s, 'Em Andamento', %s)
+                        ON DUPLICATE KEY UPDATE aluno_id = aluno_id
+                    """
+                    cur.execute(sql_desbloqueio_novo_nivel, (aluno_id, primeiro_modulo_id, proximo_nivel))
+                
+                # c. Atualiza a sessão
+                session['nivel_curso'] = proximo_nivel
+                
+                flash(f'PARABÉNS! Você avançou para o Nível {proximo_nivel}!', 'success')
+                should_redirect = True
             
     mysql.connection.commit()
     cur.close()
 
+    # -----------------------------------------------------
+    # 🔴 NOVO FLUXO DE RETORNO
+    # -----------------------------------------------------
+    if should_redirect:
+        # Se houve transição de nível, redireciona para a home para que o sistema carregue os novos módulos
+        return redirect(url_for('curso_home'))
+    
+    # Se não houve transição (aprovou, reprovou ou atingiu o final sem mais níveis), retorna o popup
     return render_template('desempenho_popup.html', 
                             acertos=acertos, 
                             erros=erros, 
                             total_perguntas=total_perguntas,
                             nota_final=nota_final,
                             aprovado=aprovado)
-
 @app.route('/perfil')
 @login_required
 def perfil():
