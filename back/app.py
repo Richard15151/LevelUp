@@ -446,9 +446,6 @@ def curso_home():
 @app.route('/curso/<string:curso>/modulo/<int:ordem>', methods=['GET'])
 @login_required
 def modulo_page(curso, ordem):
-    @app.route('/curso/<string:curso>/modulo/<int:ordem>', methods=['GET'])
-@login_required
-def modulo_page(curso, ordem):
     aluno_id = session['aluno_id']
     curso_acesso = session['curso_acesso']
     nivel_atual = session.get('nivel_curso')
@@ -459,17 +456,17 @@ def modulo_page(curso, ordem):
     if curso_limpo != curso_session_limpo:
         return "Acesso negado ao curso.", 403
 
-    # 🔴 CORREÇÃO 1: Inicialize o cursor AQUI, para que ele esteja no escopo
+    # ✅ CORREÇÃO 1: Inicializa o cursor AQUI
     cur = mysql.connection.cursor()
     
     # -----------------------------------------------------
-    # Lógica de Validação de Acesso (Módulos Sequenciais)
+    # Lógica de Validação de Acesso (Sequencial e Nível)
     # -----------------------------------------------------
 
     if ordem > 1:
+        # Lógica de validação do módulo anterior
         modulo_anterior_ordem = ordem - 1
         
-        # O USO DO 'cur' começa aqui
         cur.execute("SELECT modulo_id FROM modulo WHERE curso_acesso = %s AND nivel = %s AND ordem = %s", 
                      [curso_acesso, nivel_atual, modulo_anterior_ordem])
         modulo_anterior = cur.fetchone()
@@ -481,37 +478,60 @@ def modulo_page(curso, ordem):
             
             if not progresso_anterior or progresso_anterior['status_modulo'] != 'Concluído':
                 flash("Você precisa concluir o módulo anterior para acessar este.", 'warning')
-                cur.close() # Pode fechar o cursor aqui
+                cur.close() 
                 return redirect(url_for('curso_home'))
         else:
-            cur.close() # Pode fechar o cursor aqui
+            cur.close()
             return "Módulo anterior não encontrado.", 404
 
     elif ordem == 1 and nivel_atual != 'Básico':
+        # ✅ Lógica de validação do nível anterior (restaurada)
         
-        # ... (O restante da sua lógica de validação de NÍVEL ANTERIOR) ...
-        # (Todos esses blocos internos usam cur, o que está correto)
+        # Invertendo o mapeamento para achar o nível anterior
+        # Presume-se que NIVEIS_ORDEM é um dicionário, e o seu inverso é NIVEIS_ANTERIORES
+        NIVEIS_ANTERIORES = {v: k for k, v in NIVEIS_ORDEM.items()}
+        nivel_anterior = NIVEIS_ANTERIORES.get(nivel_atual)
         
-        # Certifique-se de fechar o cursor antes de *qualquer* return neste bloco:
-        # Ex:
-        # if not progresso_nivel_anterior or progresso_nivel_anterior['status_modulo'] != 'Concluído':
-        #     flash(f"Você precisa concluir o Nível {nivel_anterior} para iniciar o Nível {nivel_atual}.", 'warning')
-        #     cur.close()
-        #     return redirect(url_for('curso_home'))
-        pass # Se não precisar de redirecionamento, continua.
-
-    # 🔴 CORREÇÃO 2: A linha `cur.close()` DEVE ser removida ou movida para um local seguro.
-    # Como você já tem `cur.close()` dentro dos `return` condicionais, 
-    # e não está em um `try...finally`, vamos movê-lo para o final.
-
+        if nivel_anterior:
+            # 2a. Encontrar o último módulo do nível anterior (Ordem MÁXIMA)
+            cur.execute("SELECT modulo_id, ordem FROM modulo WHERE curso_acesso = %s AND nivel = %s ORDER BY ordem DESC LIMIT 1", 
+                         [curso_acesso, nivel_anterior])
+            ultimo_modulo_anterior = cur.fetchone()
+            
+            if ultimo_modulo_anterior:
+                    cur.close()
+                    flash(f"Erro de configuração: Módulos do Nível {nivel_anterior} não encontrados.", 'danger')
+                    return redirect(url_for('curso_home'))
+            ultimo_modulo_id = ultimo_modulo_anterior['modulo_id']
+            
+            # 2b. Verificar se o último módulo do nível anterior está Concluído
+            cur.execute("SELECT status_modulo FROM desempenho_modulo WHERE aluno_id = %s AND modulo_id = %s AND nivel_modulo = %s", 
+                            [aluno_id, ultimo_modulo_id, nivel_anterior])
+            progresso_nivel_anterior = cur.fetchone()
+            
+            if not progresso_nivel_anterior or progresso_nivel_anterior['status_modulo'] != 'Concluído':
+                flash(f"Você precisa concluir o Nível {nivel_anterior} para iniciar o Nível {nivel_atual}.", 'warning')
+                cur.close()
+                return redirect(url_for('curso_home'))
+        # Se for o Módulo 1 do Básico, o acesso é livre.
+        
     # -----------------------------------------------------
     # Carregamento de Conteúdo Final (Se todas as validações passarem)
     # -----------------------------------------------------
     
-    # ... (Seu código de carregar conteúdo e renderizar) ...
+    # ✅ Lógica de carregamento de conteúdo (restaurada)
+    conteudo = carregar_conteudo_json(curso_limpo, ordem, nivel_atual) 
+    
+    if not conteudo:
+        cur.close() # Fechar em caso de erro de conteúdo também
+        return "Conteúdo do módulo não encontrado ou inválido.", 404
 
-    # 🔴 CORREÇÃO 3: Feche o cursor antes do `return render_template`
+    # ✅ CORREÇÃO 2: Feche o cursor AQUI, antes de renderizar
     cur.close() 
+
+    # -----------------------------------------------------
+    # Renderização
+    # -----------------------------------------------------
 
     return render_template('modulo_page.html', 
                              curso=curso_limpo, 
@@ -660,6 +680,7 @@ def enviar_atividade(curso, ordem):
                             total_perguntas=total_perguntas,
                             nota_final=nota_final,
                             aprovado=aprovado)
+
 @app.route('/perfil')
 @login_required
 def perfil():
