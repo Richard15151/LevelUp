@@ -14,6 +14,7 @@ from google import genai
 from google.genai import types
 from dotenv import load_dotenv
 from uuid import uuid4
+from unidecode import unidecode
 import os
 import hashlib
 import json
@@ -148,6 +149,13 @@ def send_message_with_rotation(chat_session, mensagem_usuario):
 # *******************************************************************
 active_chats = {} # Armazena as sessões de chat contínuo por session_id
 
+def limpar_nome_nivel(nivel):
+    # Converte para minúsculas
+    limpo = nivel.lower() 
+    limpo = limpo.replace('á', 'a').replace('é', 'e').replace('í', 'i').replace('ó', 'o').replace('ú', 'u')
+    
+    return limpo
+
 def get_curso_system_instruction(curso_acesso):
     """Gera as instruções do sistema baseadas no curso atual do aluno."""
     return f"""
@@ -260,6 +268,7 @@ def carregar_conteudo_json(curso, ordem, nivel):
         # Pega o diretório base do projeto (onde app.py está)
         base_dir = os.path.dirname(os.path.abspath(__file__))
         curso_limpo = curso.lower().replace('ê', 'e').replace('ã', 'a')
+        nivel_limpo = nivel.lower().replace('á', 'a').replace('é', 'e')
         
         # Constrói o caminho completo do arquivo
         caminho_arquivo = os.path.join(base_dir, 
@@ -267,7 +276,7 @@ def carregar_conteudo_json(curso, ordem, nivel):
                                        'static', 
                                        'json_content', 
                                        curso_limpo,
-                                       nivel.lower(),
+                                       nivel_limpo,
                                        f'modulo_{ordem}.json')
         
         # DEBUG (é bom manter isso por enquanto):
@@ -449,6 +458,8 @@ def modulo_page(curso, ordem):
     aluno_id = session['aluno_id']
     curso_acesso = session['curso_acesso']
     nivel_atual = session.get('nivel_curso')
+
+    print(f"\n[DEBUG 1] ACESSANDO MODULO PAGE: {curso_acesso}, Nivel: {nivel_atual}, Ordem: {ordem}")
     
     curso_limpo = curso.lower().replace('ê', 'e').replace('ã', 'a')
     curso_session_limpo = curso_acesso.lower().replace('ê', 'e').replace('ã', 'a')
@@ -456,7 +467,6 @@ def modulo_page(curso, ordem):
     if curso_limpo != curso_session_limpo:
         return "Acesso negado ao curso.", 403
 
-    # ✅ CORREÇÃO 1: Inicializa o cursor AQUI
     cur = mysql.connection.cursor()
     
     # -----------------------------------------------------
@@ -464,7 +474,8 @@ def modulo_page(curso, ordem):
     # -----------------------------------------------------
 
     if ordem > 1:
-        # Lógica de validação do módulo anterior
+        # Lógica de validação do módulo anterior (Ordem > 1)
+        # O código está OK neste bloco
         modulo_anterior_ordem = ordem - 1
         
         cur.execute("SELECT modulo_id FROM modulo WHERE curso_acesso = %s AND nivel = %s AND ordem = %s", 
@@ -473,60 +484,68 @@ def modulo_page(curso, ordem):
         
         if modulo_anterior:
             cur.execute("SELECT status_modulo FROM desempenho_modulo WHERE aluno_id = %s AND modulo_id = %s AND nivel_modulo = %s", 
-                         [aluno_id, modulo_anterior['modulo_id'], nivel_atual])
+                          [aluno_id, modulo_anterior['modulo_id'], nivel_atual])
             progresso_anterior = cur.fetchone()
             
             if not progresso_anterior or progresso_anterior['status_modulo'] != 'Concluído':
+                print("[DEBUG 2] BLOQUEADO: Módulo anterior não concluído.")
                 flash("Você precisa concluir o módulo anterior para acessar este.", 'warning')
                 cur.close() 
                 return redirect(url_for('curso_home'))
         else:
+            print("[DEBUG 3] ERRO: Módulo anterior não encontrado no banco.")
             cur.close()
             return "Módulo anterior não encontrado.", 404
 
     elif ordem == 1 and nivel_atual != 'Básico':
-        # ✅ Lógica de validação do nível anterior (restaurada)
+        # Lógica de validação do nível anterior (Módulo 1 de um Nível novo)
         
-        # Invertendo o mapeamento para achar o nível anterior
-        # Presume-se que NIVEIS_ORDEM é um dicionário, e o seu inverso é NIVEIS_ANTERIORES
-        NIVEIS_ANTERIORES = {v: k for k, v in NIVEIS_ORDEM.items()}
+        # Presume-se que NIVEIS_ORDEM é um dicionário global
+        NIVEIS_ANTERIORES = {'Intermediário': 'Básico', 'Avançado': 'Intermediário'} # Simplificando para o caso
         nivel_anterior = NIVEIS_ANTERIORES.get(nivel_atual)
         
         if nivel_anterior:
-            # 2a. Encontrar o último módulo do nível anterior (Ordem MÁXIMA)
+            # 2a. Encontrar o último módulo do nível anterior
             cur.execute("SELECT modulo_id, ordem FROM modulo WHERE curso_acesso = %s AND nivel = %s ORDER BY ordem DESC LIMIT 1", 
                          [curso_acesso, nivel_anterior])
             ultimo_modulo_anterior = cur.fetchone()
             
-            if ultimo_modulo_anterior:
-                    cur.close()
-                    flash(f"Erro de configuração: Módulos do Nível {nivel_anterior} não encontrados.", 'danger')
-                    return redirect(url_for('curso_home'))
+            # 🚨 CORREÇÃO PRINCIPAL: Verificação de 'None' deve redirecionar
+            if not ultimo_modulo_anterior:
+                 # 🔴 DEBUG 5: Redirecionamento por Último Módulo Anterior não encontrado (Erro de configuração)
+                print("[DEBUG 5] ERRO: Último Módulo do Nível Anterior não encontrado no banco.")
+                cur.close()
+                flash("Erro de configuração de nível. Módulo Final não encontrado.", 'danger')
+                return redirect(url_for('curso_home'))
+            
             ultimo_modulo_id = ultimo_modulo_anterior['modulo_id']
             
             # 2b. Verificar se o último módulo do nível anterior está Concluído
-            cur.execute("SELECT status_modulo FROM desempenho_modulo WHERE aluno_id = %s AND modulo_id = %s AND nivel_modulo = %s", 
-                            [aluno_id, ultimo_modulo_id, nivel_anterior])
+            cur.execute("SELECT status_modulo FROM desempenho_modulo WHERE aluno_id = %s AND modulo_id = %s", 
+                         [aluno_id, ultimo_modulo_id])
             progresso_nivel_anterior = cur.fetchone()
             
             if not progresso_nivel_anterior or progresso_nivel_anterior['status_modulo'] != 'Concluído':
+                print(f"[DEBUG 4] BLOQUEADO: Nível {nivel_anterior} não concluído. Módulo ID: {ultimo_modulo_anterior['modulo_id']}")
                 flash(f"Você precisa concluir o Nível {nivel_anterior} para iniciar o Nível {nivel_atual}.", 'warning')
                 cur.close()
                 return redirect(url_for('curso_home'))
-        # Se for o Módulo 1 do Básico, o acesso é livre.
+        # Se 'nivel_anterior' não for encontrado, o código simplesmente continua, o que está correto para evitar falha no Básico.
         
     # -----------------------------------------------------
     # Carregamento de Conteúdo Final (Se todas as validações passarem)
     # -----------------------------------------------------
     
-    # ✅ Lógica de carregamento de conteúdo (restaurada)
+    # 🟢 DEBUG 6: Chamando a função de carregamento
+    print("[DEBUG 6] INICIANDO CARREGAMENTO DO JSON...")
+    
+    # 🚨 LEMBRETE: Sua função carregar_conteudo_json precisa da correção do acento (nivel.lower().replace('á', 'a'))
     conteudo = carregar_conteudo_json(curso_limpo, ordem, nivel_atual) 
     
     if not conteudo:
-        cur.close() # Fechar em caso de erro de conteúdo também
+        cur.close()
         return "Conteúdo do módulo não encontrado ou inválido.", 404
 
-    # ✅ CORREÇÃO 2: Feche o cursor AQUI, antes de renderizar
     cur.close() 
 
     # -----------------------------------------------------
@@ -534,17 +553,17 @@ def modulo_page(curso, ordem):
     # -----------------------------------------------------
 
     return render_template('modulo_page.html', 
-                             curso=curso_limpo, 
-                             ordem=ordem, 
-                             nivel=nivel_atual, 
-                             modulo=conteudo)
+                            curso=curso_limpo, 
+                            ordem=ordem, 
+                            nivel=nivel_atual, 
+                            modulo=conteudo)
 
 @app.route('/curso/<string:curso>/modulo/<int:ordem>', methods=['POST'])
 @login_required
 def enviar_atividade(curso, ordem):
     aluno_id = session['aluno_id']
     curso_acesso = session['curso_acesso']
-    nivel_atual = session.get('nivel_curso') # 🔴 NOVO: Pega o nível atual do aluno
+    nivel_atual = session.get('nivel_curso')
     
     # 🔴 VERIFICAÇÃO DE NÍVEL:
     if not nivel_atual:
@@ -660,7 +679,8 @@ def enviar_atividade(curso, ordem):
                 # c. Atualiza a sessão
                 session['nivel_curso'] = proximo_nivel
                 
-                flash(f'PARABÉNS! Você avançou para o Nível {proximo_nivel}!', 'success')
+                # 🏆 MUDANÇA AQUI: Usa a categoria 'level_up' para o pop-up
+                flash(f'Parabéns! Você concluiu o nível {nivel_atual} e avançou para o nível {proximo_nivel}!', 'level_up')
                 should_redirect = True
             
     mysql.connection.commit()
@@ -670,7 +690,7 @@ def enviar_atividade(curso, ordem):
     # 🔴 NOVO FLUXO DE RETORNO
     # -----------------------------------------------------
     if should_redirect:
-        # Se houve transição de nível, redireciona para a home para que o sistema carregue os novos módulos
+        # Se houve transição de nível, redireciona para a home (onde o pop-up será exibido)
         return redirect(url_for('curso_home'))
     
     # Se não houve transição (aprovou, reprovou ou atingiu o final sem mais níveis), retorna o popup
