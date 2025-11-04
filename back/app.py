@@ -42,8 +42,8 @@ app.secret_key = 'levelup' # Mantenha a chave do app.py
 
 # CONFIGURAÇÃO DO BANCO DE DADOS (MySQL)
 app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'root'         # Mude para seu usuário MySQL
-app.config['MYSQL_PASSWORD'] = 'rdbanco' # Mude para sua senha MySQL
+app.config['MYSQL_USER'] = 'root'
+app.config['MYSQL_PASSWORD'] = 'senai'
 app.config['MYSQL_DB'] = 'levelup'
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 
