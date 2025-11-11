@@ -284,31 +284,6 @@ def carregar_conteudo_json(curso, ordem, nivel):
             
         with open(caminho_arquivo, 'r', encoding='utf-8') as f:
             conteudo = json.load(f)
-            
-            # -------------------------------------------------------------------
-            # ✅ NOVO CÓDIGO: EXTRAÇÃO E CRIAÇÃO DA URL DE INCORPORAÇÃO (EMBED)
-            # -------------------------------------------------------------------
-            youtube_url = conteudo.get('youtube_url')
-            
-            if youtube_url:
-                # Usa regex para encontrar o ID do vídeo, seja em youtu.be/ID ou watch?v=ID
-                # O (?:...) cria um grupo de não-captura para simplificar
-                video_id_match = re.search(r'(?:youtu\.be/|v=)([\w-]+)', youtube_url)
-                
-                if video_id_match:
-                    video_id = video_id_match.group(1)
-                    # Cria a URL de incorporação (embed) que o iframe precisa
-                    # ?rel=0 evita que vídeos relacionados de outros canais sejam exibidos ao final.
-                    conteudo['embed_url'] = f'https://www.youtube.com/embed/{video_id}?rel=0'
-                else:
-                    # Se não conseguir extrair o ID
-                    conteudo['embed_url'] = None
-                    print(f"[ERRO YOUTUBE] URL do YouTube inválida no JSON: {youtube_url}")
-            else:
-                # Se a chave youtube_url não estiver no JSON
-                conteudo['embed_url'] = None
-            # -------------------------------------------------------------------
-
             return conteudo
             
     except FileNotFoundError:

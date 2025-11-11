@@ -1,6 +1,6 @@
 {
     "titulo": "Módulo 1: Verbo to be",
-    "youtube_url": "https://youtu.be/bSeZlT7Og8I?si=yCBPInQEkCT69OeX",
+    "video_path": "video1.mp4",
     "atividades": [
         {
             "id": "q1",
@@ -66,7 +66,7 @@
             "id": "q7",
             "pergunta": "Qual das alternativas apresenta corretamente uma frase na negativa, e uma na afirmativa, respectivamente?",
             "opcoes": {
-                "A": "I am not happy anymore. I’m felling sad.",
+                "A": "I am not happy anymore. I’m feeling sad.",
                 "B": "I am hungry! I need some food.",
                 "C": "She is crying. I am sad for her.",
                 "D": "I’m not with time. I’m leaving now."

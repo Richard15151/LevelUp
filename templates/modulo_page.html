@@ -112,7 +112,7 @@
         <div
           class="mb-4 md:mb-6 rounded-xl overflow-hidden shadow-medium bg-gray-900"
         >
-          {% if modulo.embed_url %}
+          {% if modulo.video_path %}
           <div
             class="video-container"
             style="
@@ -122,22 +122,13 @@
               overflow: hidden;
             "
           >
-            <iframe
-              src="{{ modulo.embed_url }}"
-              frameborder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowfullscreen
-              title="{{ modulo.titulo }}"
-              style="
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                border-radius: 8px;
-              "
-            >
-            </iframe>
+            <video width="100%" controls>
+              <source
+                src="{{ url_for('static', filename='videos/' + modulo.video_path) }}"
+                type="video/mp4"
+              />
+              Seu navegador não suporta a tag de vídeo.
+            </video>
           </div>
           {% else %}
           <p class="text-red-500">
